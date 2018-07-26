@@ -1,6 +1,21 @@
-# mobileShopFront
+# mobileshopfront
 
-front end part of mobile web shop project, done in vue.js and that needs 
-to be connected with the back end part in mongomobileshop repository, which is done in node.js
-and database is on mongo atlas. the plan is that whole project is uploaded to the internet
-and to be up and running.
+> A Vue.js project
+
+## Build Setup
+
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report
+```
+
+For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
