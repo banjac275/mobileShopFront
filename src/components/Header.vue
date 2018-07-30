@@ -10,10 +10,13 @@
         <router-link to="/tablets">Tablets <font-awesome-icon icon="tablet-alt" /></router-link>
         <router-link to="/users" class="users">Users <font-awesome-icon icon="users" /></router-link>
         <router-link to="/cart">Cart <font-awesome-icon icon="shopping-cart" /></router-link>
-        <router-link to="/login">{{ profile }} <font-awesome-icon icon="users-cog" /></router-link>
-        <div class="profile--dropdown">
-          <div>{{ log }}</div>
-          <div>View Profile</div>
+        <div class="profile--dropdown__parent">
+          <a class="profile--dropdown__btn" @click="profileDropdownClick">{{ getUserName }} <font-awesome-icon icon="users-cog" /></a>
+          <div class="profile--dropdown">
+            <router-link to="/profile" class="height-shrink" v-if="getConnectionCheck">View Profile</router-link>
+            <router-link to="/login" class="height-shrink" v-else>Log In/Sign In</router-link>
+            <div class="height-shrink" v-if="getConnectionCheck">Log Out</div>
+          </div>
         </div>
       </div>
     </nav>
@@ -21,14 +24,40 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
-      profile: 'Profile',
-      log: 'Log In'
+      profile: 'Profile'
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'getUserName',
+      'getConnectionCheck'
+    ])
+  },
+  methods: {
+    profileDropdownClick() {
+      let dropdown = document.querySelector('.profile--dropdown').children;
+
+      Array(dropdown).forEach(element => {
+        console.log(element);
+        if(element[0].classList.contains("height-shrink")) {
+          element[0].classList.add("height-expand");
+          element[0].parentNode.classList.remove("no-border");
+          element[0].classList.remove("height-shrink");
+        } else {
+          element[0].classList.add("height-shrink");
+          element[0].parentNode.classList.add("no-border");
+          element[0].classList.remove("height-expand");
+        }
+      });
     }
   }
 }
+
 </script>
 
 <style lang="scss" scoped>
@@ -43,6 +72,7 @@ export default {
   line-height: 50px;
   box-shadow: 0.1px 2px #b4b4b4;
   background-color: #fff;
+  z-index: 2;
 }
 
 .header--right {
@@ -68,6 +98,34 @@ export default {
   }
 }
 
+.profile--dropdown__parent {
+  min-width: 80px;
+}
+
+.profile--dropdown__btn {
+  min-height: 50px;
+}
+
+.profile--dropdown {
+  background-color: #fff;
+  border-bottom: 1px solid #000;
+  border-left: 1px solid #000;
+  border-radius: 0 0 2px 2px;
+  border-right: 1px solid #000;
+  cursor: pointer;
+  margin-top: 5px;
+  /* margin-left: -253px; */
+  position: absolute;
+  text-align: center;
+  width: 290px;
+  z-index: 3;
+  display: none;
+}
+
+.no-border {
+  border: 0;
+}
+
 .users {
   display: none;
 }
@@ -85,5 +143,39 @@ export default {
 
 .profile--dropdown {
   display: none;
+}
+
+.height-expand {
+  animation: height-expand .4s ease;
+  border: 0;
+  min-height: 32px;
+}
+
+.height-shrink {
+  animation: height-shrink .4s ease;
+  border: 0;
+  min-height: 0;
+}
+
+@keyframes height-shrink {
+  from {
+    min-height: 32px;
+    opacity: 1;
+  }
+  to {
+    min-height: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes height-expand {
+  from {
+    min-height: 0;
+    opacity: 0;
+  }
+  to {
+    min-height: 32px;
+    opacity: 1;
+  }
 }
 </style>

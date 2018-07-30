@@ -18,6 +18,8 @@ import { faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+import { store } from './store/store'
+
 Vue.config.productionTip = false
 
 library.add(faMobileAlt)
@@ -37,6 +39,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

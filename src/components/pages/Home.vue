@@ -31,6 +31,7 @@ export default {
   text-align: center;
   width: 100%;
   margin-top: 40px;
+  z-index: 1;
 }
 
 .triangle {

@@ -35,15 +35,15 @@
     </transition>
     <div class="notification__container">
       <transition name="notification">
-        <p class="notifications" v-if="showNotification">{{notificationText}}</p>
+        <p class="notifications" v-if="getNotificationShowCheck">{{getNotificationText}}</p>
       </transition>
     </div>
   </div>
 </template>
 
 <script>
-const axios = require('axios');
-let notifications = document.querySelector(".notifications");
+import { mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   data() {
@@ -62,56 +62,28 @@ export default {
       passwordCompare: '',
       showLogin: true,
       showPass: true,
-      notificationText: '',
-      showNotification: false,
       prevVal: 0
     }
   },
   methods: {
+    ...mapActions([
+      'logIn',
+      'signIn',
+      'notify'
+    ]),
     submit() {
-      if(this.user.email === '' || this.user.password === '') {
-        this.notificationText = 'Error:\r\nThere is email or password missing. Please fill inputs or sign up.';
-        this.showNotification = !this.showNotification;
-      } else {
-        this.showNotification = false;
-        axios({
-          method: 'post',
-          url: 'https://banji-mobile-shop.herokuapp.com/users/signin',
-          data: this.user,
-          headers: {'Content-Type': 'application/json'}
-        })
-        .then(response => {
-          console.log(response);
-        })
-        .catch(err => {
-          console.log(err);
-          this.notificationText = "Error: Your account can\'t be found due to wrong password or e-mail, or simply because it doesn\'t exist. Repair e-mail and/or password or sign up.";
-          this.showNotification = true;
-        });
-      }
+      let user = this.user;
+      this.logIn({ user })
+      .then(() => {
+        this.$router.push('profile');
+      })
     },
     signNew() {
-      if(this.userSignIn.email === '' || this.userSignIn.password === '' || this.userSignIn.firstName === '' || this.userSignIn.lastName === '' || this.passwordCompare === '' || this.passwordCompare !== this.userSignIn.password) {
-        this.notificationText = 'Error:\r\nThere is some data missing or passwords dont match. Please fill all inputs correctly.';
-        this.showNotification = !this.showNotification;
-        console.log(this.userSignIn);
-      } else {
-        this.showNotification = false;
-        axios({
-          method: 'post',
-          url: 'https://banji-mobile-shop.herokuapp.com/users/signup',
-          data: this.userSignIn,
-          headers: {'Content-Type': 'application/json'}
-        })
-        .then(response => {
-          console.log(response);
-        })
-        .catch(err => {
-          console.log(err);
-          this.notificationText = "Error: Your account wasn\'t made due to an error. Please try again.";
-          this.showNotification = true;
-        });
-      }
+      let user = this.userSignIn;
+      this.signIn({user})
+      .then(() => {
+        this.$router.push('profile');
+      })
     },
     showPassword() {
       let passInput = document.querySelector(".input--password");
@@ -119,12 +91,18 @@ export default {
       (passInput.getAttribute('type') === 'password') ? passInput.setAttribute('type', 'text') : passInput.setAttribute('type', 'password');
     },
     toggleLogin(value) {
-      this.showNotification = false;
+      this.notify(false);
       if (this.prevVal === 0 || value !== this.prevVal) {
         (value === 1) ? this.showLogin = true : this.showLogin = false;
       } 
       this.prevVal = value;
     }
+  },
+  computed: {
+    ...mapGetters([
+      'getNotificationText',
+      'getNotificationShowCheck'
+    ])
   }
 }
 </script>
