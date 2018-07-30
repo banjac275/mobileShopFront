@@ -7,6 +7,8 @@ import notificationText from './modules/notificationText'
 import notifyCheck from './modules/notifyCheck'
 import userType from './modules/userType'
 import connectionCheck from './modules/connectionCheck'
+import userCheck from './modules/userCheck'
+import profileId from './modules/profileId'
 
 Vue.use(Vuex)
 
@@ -25,6 +27,7 @@ export const store = new Vuex.Store({
         commit('changeName', { name: response.data.userName });
         commit('changeAuthentication', { auth: response.data.auth });
         commit('changeType', { type: response.data.userType });
+        (response.data.userType === 'admin') ? commit('showUserCard', true) : commit('showUserCard', false);
         commit('checkConnection', true);
         Promise.resolve();
       })
@@ -68,6 +71,7 @@ export const store = new Vuex.Store({
         commit('changeName', { name: response.data.userName });
         commit('changeAuthentication', { auth: response.data.auth });
         commit('changeType', { type: response.data.userType });
+        (response.data.userType === 'admin') ? commit('showUserCard', true) : commit('showUserCard', false);
         commit('checkConnection', true);
         Promise.resolve();
       })
@@ -95,6 +99,8 @@ export const store = new Vuex.Store({
     notificationText,
     notifyCheck,
     userType,
-    connectionCheck
+    connectionCheck,
+    userCheck,
+    profileId
   }
 })

@@ -42,11 +42,10 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  data() {
+  data () {
     return {
       user: {
         email: '',
@@ -71,31 +70,31 @@ export default {
       'signIn',
       'notify'
     ]),
-    submit() {
-      let user = this.user;
+    submit () {
+      let user = this.user
       this.logIn({ user })
-      .then(() => {
-        this.$router.push('profile');
+        .then(() => {
+          this.$router.push('profile')
       })
     },
-    signNew() {
+    signNew () {
       let user = this.userSignIn;
       this.signIn({user})
-      .then(() => {
-        this.$router.push('profile');
+        .then(() => {
+          this.$router.push('profile')
       })
     },
-    showPassword() {
-      let passInput = document.querySelector(".input--password");
+    showPassword () {
+      let passInput = document.querySelector(".input--password")
       this.showPass = !this.showPass;
-      (passInput.getAttribute('type') === 'password') ? passInput.setAttribute('type', 'text') : passInput.setAttribute('type', 'password');
+      (passInput.getAttribute('type') === 'password') ? passInput.setAttribute('type', 'text') : passInput.setAttribute('type', 'password')
     },
-    toggleLogin(value) {
-      this.notify(false);
+    toggleLogin (value) {
+      this.notify(false)
       if (this.prevVal === 0 || value !== this.prevVal) {
-        (value === 1) ? this.showLogin = true : this.showLogin = false;
-      } 
-      this.prevVal = value;
+        (value === 1) ? this.showLogin = true : this.showLogin = false
+      }
+      this.prevVal = value
     }
   },
   computed: {
@@ -136,7 +135,7 @@ export default {
     &:hover {
         cursor: pointer;
         background-color: #b8b8b8;
-        color: #fff; 
+        color: #fff;
       }
   }
 
@@ -152,7 +151,7 @@ export default {
     margin-bottom: 20px;
   }
 
-  input {    
+  input {
     border-bottom: 1px solid #000;
     margin-bottom: 20px;
     line-height: 20px;
@@ -168,7 +167,7 @@ export default {
     width: 370px;
   }
 
-  .input--eye { 
+  .input--eye {
     border-bottom: 1px solid #000;
     height: 25px;
     width: 30px;

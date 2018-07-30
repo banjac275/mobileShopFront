@@ -8,13 +8,13 @@
         <router-link to="/search">Search <font-awesome-icon icon="search" /></router-link>
         <router-link to="/phones">Phones <font-awesome-icon icon="mobile-alt" /></router-link>
         <router-link to="/tablets">Tablets <font-awesome-icon icon="tablet-alt" /></router-link>
-        <router-link to="/users" class="users">Users <font-awesome-icon icon="users" /></router-link>
+        <router-link to="/users" v-if="getUserCheck">Users <font-awesome-icon icon="users" /></router-link>
         <router-link to="/cart">Cart <font-awesome-icon icon="shopping-cart" /></router-link>
-        <div class="profile--dropdown__parent">
-          <a class="profile--dropdown__btn" @click="profileDropdownClick">{{ getUserName }} <font-awesome-icon icon="users-cog" /></a>
-          <div class="profile--dropdown">
+        <div class="profile--dropdown__parent" v-on-click-outside="close">
+          <a class="profile--dropdown__btn" @click="profileDropdownClick(true)">{{ getUserName }} <font-awesome-icon icon="users-cog" /></a>
+          <div class="profile--dropdown no-border" @click="close">
             <router-link to="/profile" class="height-shrink" v-if="getConnectionCheck">View Profile</router-link>
-            <router-link to="/login" class="height-shrink" v-else>Log In/Sign In</router-link>
+            <router-link to="/login" class="height-shrink" v-else >Log In/Sign In</router-link>
             <div class="height-shrink" v-if="getConnectionCheck">Log Out</div>
           </div>
         </div>
@@ -25,8 +25,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { mixin as onClickOutside } from 'vue-on-click-outside'
 
 export default {
+  mixins: [onClickOutside],
   data() {
     return {
       profile: 'Profile'
@@ -35,25 +37,32 @@ export default {
   computed: {
     ...mapGetters([
       'getUserName',
-      'getConnectionCheck'
+      'getConnectionCheck',
+      'getUserCheck'
     ])
   },
   methods: {
-    profileDropdownClick() {
+    profileDropdownClick(c) {
       let dropdown = document.querySelector('.profile--dropdown').children;
-
-      Array(dropdown).forEach(element => {
-        console.log(element);
-        if(element[0].classList.contains("height-shrink")) {
-          element[0].classList.add("height-expand");
-          element[0].parentNode.classList.remove("no-border");
-          element[0].classList.remove("height-shrink");
+      let btn = document.querySelector('.profile--dropdown__btn');
+      for (let i = 0; i < dropdown.length; i++) {
+        if(dropdown[i].classList.contains("height-shrink")) {
+          if(c) {
+            dropdown[i].classList.add("height-expand");
+            dropdown[i].parentNode.classList.remove("no-border");
+            dropdown[i].classList.remove("height-shrink");
+            btn.classList.add("add-border-to-btn");
+          }
         } else {
-          element[0].classList.add("height-shrink");
-          element[0].parentNode.classList.add("no-border");
-          element[0].classList.remove("height-expand");
+          dropdown[i].classList.add("height-shrink");
+          dropdown[i].parentNode.classList.add("no-border");
+          dropdown[i].classList.remove("height-expand");
+          btn.classList.remove("add-border-to-btn");
         }
-      });
+      };
+    },
+    close() {
+      this.profileDropdownClick(false)
     }
   }
 }
@@ -79,7 +88,7 @@ export default {
   display: flex;
   flex-flow: row;
   justify-content: space-around;
-  width: 40%;
+  width: 50%;
   margin-right: 10px;
   a {
       color: #000;
@@ -100,10 +109,17 @@ export default {
 
 .profile--dropdown__parent {
   min-width: 80px;
+  position: relative;
+  display: inline-block;
 }
 
 .profile--dropdown__btn {
-  min-height: 50px;
+  min-height: 51px;
+  min-width: 100%;
+  padding-top: 17px;
+  padding-bottom: 17px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .profile--dropdown {
@@ -113,17 +129,26 @@ export default {
   border-radius: 0 0 2px 2px;
   border-right: 1px solid #000;
   cursor: pointer;
-  margin-top: 5px;
-  /* margin-left: -253px; */
+  margin-top: 3px;
+  margin-left: -78px;
   position: absolute;
   text-align: center;
-  width: 290px;
+  width: 150px;
   z-index: 3;
-  display: none;
+  & > div:hover {
+        cursor: pointer;
+        background-color: #b8b8b8;
+        color: #fff; 
+      }
 }
 
 .no-border {
   border: 0;
+}
+
+.show 
+{
+  display:block;
 }
 
 .users {
@@ -140,21 +165,24 @@ export default {
     cursor: pointer;
   }
 }
-
-.profile--dropdown {
-  display: none;
+.add-border-to-btn {
+  border-top: 1px solid #000;
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
 }
 
 .height-expand {
   animation: height-expand .4s ease;
   border: 0;
   min-height: 32px;
+  display: block;
 }
 
 .height-shrink {
   animation: height-shrink .4s ease;
   border: 0;
   min-height: 0;
+  display: none;
 }
 
 @keyframes height-shrink {
