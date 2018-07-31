@@ -30,7 +30,7 @@
         <input class="input--mail" type="password" v-model="userSignIn.password">
         <p>Confirm Password:</p>
         <input class="input--mail" type="password" v-model="passwordCompare">
-        <button class="submit" @click="signNew">Sign In <font-awesome-icon icon="user-plus" /></button>
+        <button class="submit" @click="signNew">Sign Up <font-awesome-icon icon="user-plus" /></button>
       </div>
     </transition>
     <div class="notification__container">

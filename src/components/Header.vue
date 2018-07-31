@@ -88,12 +88,12 @@ export default {
   display: flex;
   flex-flow: row;
   justify-content: space-around;
-  width: 50%;
+  width: 40%;
   margin-right: 10px;
   a {
       color: #000;
       text-decoration: none;
-      width: 100%;
+      min-width: 80px;
       height: 100%;
       margin-bottom: 5px;
       padding-left: 5px;
@@ -108,14 +108,14 @@ export default {
 }
 
 .profile--dropdown__parent {
-  min-width: 80px;
+  min-width: 100px;
   position: relative;
   display: inline-block;
 }
 
 .profile--dropdown__btn {
   min-height: 51px;
-  min-width: 100%;
+  min-width: 100px;
   padding-top: 17px;
   padding-bottom: 17px;
   padding-left: 10px;
@@ -130,7 +130,7 @@ export default {
   border-right: 1px solid #000;
   cursor: pointer;
   margin-top: 3px;
-  margin-left: -78px;
+  margin-left: -77px;
   position: absolute;
   text-align: center;
   width: 150px;

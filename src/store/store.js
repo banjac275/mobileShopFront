@@ -25,8 +25,9 @@ export const store = new Vuex.Store({
       .then(response => {
         console.log(response);
         commit('changeName', { name: response.data.userName });
-        commit('changeAuthentication', { auth: response.data.auth });
+        commit('changeAuthentication', { auth: response.data.token });
         commit('changeType', { type: response.data.userType });
+        commit('changeProfileId', response.data.id);
         (response.data.userType === 'admin') ? commit('showUserCard', true) : commit('showUserCard', false);
         commit('checkConnection', true);
         Promise.resolve();
@@ -69,7 +70,7 @@ export const store = new Vuex.Store({
       .then(resp => {
         console.log(resp);
         commit('changeName', { name: response.data.userName });
-        commit('changeAuthentication', { auth: response.data.auth });
+        commit('changeAuthentication', { auth: response.data.token });
         commit('changeType', { type: response.data.userType });
         (response.data.userType === 'admin') ? commit('showUserCard', true) : commit('showUserCard', false);
         commit('checkConnection', true);
@@ -90,7 +91,25 @@ export const store = new Vuex.Store({
         commit('checkConnection', false);
       });
     },
-    
+    userById({ commit }, { id }) {
+      console.log(store.state)
+      return axios({
+        method: 'get',
+        url: 'https://banji-mobile-shop.herokuapp.com/users/' + id,
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
+      })
+      .then(response => {
+        console.log(response)
+        return Promise.resolve(response);
+      })
+      .catch(err => {
+        console.log(err);
+        let text = 'Error:\r\nThere is something wrong. Please try again.';
+        commit('changeNotification', text);
+        commit('showNotification', true);
+        commit('checkConnection', false);
+      });
+    }
   },
   modules: {
     namespaced: true,
