@@ -6,36 +6,40 @@
       <div class="img--container">
         <img id="prof-image" src='../../img/user.png' alt="Profile image">
       </div>
-      <div class="text-changes">
-        <p>First Name:</p>
-        <input class="input--mail" type="text" v-model="userEdit.firstName" v-if="enableEditing">
-        <p v-else> <strong>{{ recvData.firstName }}</strong></p>
-        <p>Last Name:</p>
-        <input class="input--mail" type="text" v-model="userEdit.lastName" v-if="enableEditing">
-        <p v-else> <strong>{{ recvData.lastName }}</strong></p>
-        <p>E-mail:</p>
-        <input class="input--mail" type="email" v-model="userEdit.email" v-if="enableEditing">
-        <p v-else> <strong>{{ recvData.email }}</strong></p>
-        <p>Account type:</p>
-        <p> <strong>{{ recvData.accType }}</strong></p>
-        <div v-if="enableEditing">
-          <input type="checkbox" name="picture" v-model="checkedPicture">
-          <label for="picture">Change Picture</label>
-          <input type="checkbox" name="password" v-model="checkedPassword">
-          <label for="password">Change Password</label>
-          <br>
-          <input type="file" id="filechooser" v-if="checkedPicture">
-          <br>
-          <p v-if="checkedPassword">Old Password:</p>
-          <input class="input--mail" type="password" v-model="recvData.password" v-if="checkedPassword">
-          <p v-if="checkedPassword">New Password:</p>
-          <input class="input--mail" type="password" v-model="userEdit.password" v-if="checkedPassword">
-          <p v-if="checkedPassword">Repeat New Password:</p>
-          <input class="input--mail" type="password" v-model="repeatedPassword" v-if="checkedPassword">
+      <div class="info--container">
+        <button class="submit" @click="enableEditing = !enableEditing">Edit profile <font-awesome-icon icon="pen" /></button>
+        <div class="text-changes">
+          <button class="submit" @click="sendChanges" v-if="enableEditing">Submit changes <font-awesome-icon icon="check" /></button>
+          <p>First Name:</p>
+          <input class="input--mail" type="text" v-model="userEdit.firstName" v-if="enableEditing">
+          <p v-else> <strong>{{ recvData.firstName }}</strong></p>
+          <p>Last Name:</p>
+          <input class="input--mail" type="text" v-model="userEdit.lastName" v-if="enableEditing">
+          <p v-else> <strong>{{ recvData.lastName }}</strong></p>
+          <p>E-mail:</p>
+          <input class="input--mail" type="email" v-model="userEdit.email" v-if="enableEditing">
+          <p v-else> <strong>{{ recvData.email }}</strong></p>
+          <p>Account type:</p>
+          <p> <strong>{{ recvData.accType }}</strong></p>
+          <div v-if="enableEditing">
+            <input type="checkbox" name="picture" v-model="checkedPicture">
+            <label for="picture">Change Picture</label>
+            <input type="checkbox" name="password" v-model="checkedPassword">
+            <label for="password">Change Password</label>
+            <br>
+            <input type="file" id="filechooser" name="picture" v-if="checkedPicture">
+            <br>
+            <p v-if="checkedPassword">New Password:</p>
+            <input class="input--mail" type="password" v-model="newPassword" v-if="checkedPassword">
+          </div>
         </div>
       </div>
     </div>
-    <button class="submit" @click="enableEditing = !enableEditing">Edit profile <font-awesome-icon icon="pen" /></button>
+    <div class="notification__container">
+      <transition name="notification">
+        <p class="notifications" v-if="getNotificationShowCheck">{{getNotificationText}}</p>
+      </transition>
+    </div>
   </div>
 </template>
 
@@ -51,7 +55,7 @@ export default {
       userEdit: {},
       checkedPicture: false,
       checkedPassword: false,
-      repeatedPassword: ''
+      newPassword: '',
     }
   },
   filters: {
@@ -60,13 +64,43 @@ export default {
     ...mapGetters([
       'getProfileId',
       'getAuthCode',
-      'getUserName'
+      'getUserName',
+      'getNotificationText',
+      'getNotificationShowCheck'
     ]),
   },
   methods: {
     ...mapActions([
-      'userById'
+      'userById',
+      'notify',
+      'submitUserChanges'
     ]),
+    sendChanges() {
+      let formData = new FormData();
+      if(this.checkedPicture) {
+        let input = document.querySelector("#filechooser");
+        if(input.files.length > 0) {
+          formData.append("picture", input.files[0]);
+          this.userEdit.picture = formData;
+        } else {
+          this.userEdit.picture;
+        }
+      } else {
+        this.userEdit.picture = "";
+      }
+
+      if(this.checkedPassword) {
+        this.userEdit.password = this.newPassword;
+      }
+      console.log(this.userEdit.password)
+      this.submitUserChanges(this.userEdit)
+        .then((data) => {
+          console.log(data)
+          //this.$router.push('profile')
+          document.querySelector("#prof-image").src = "https://banji-mobile-shop.herokuapp.com/" + this.recvData.picture;
+          this.enableEditing = false;
+      })
+    }
   },
   mounted() {
       this.$nextTick(() => {
@@ -76,6 +110,8 @@ export default {
           console.log(res);
           this.recvData = res.data;
           this.userEdit = res.data;
+          if(this.recvData.picture !== undefined)
+            document.querySelector("#prof-image").src = "https://banji-mobile-shop.herokuapp.com/" + this.recvData.picture;
         })
       })
     }
@@ -83,6 +119,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+* {
+  outline: none;
+}
+
 .profile--container {
   display: flex;
   //justify-content: space-between;
@@ -102,13 +142,15 @@ hr {
 .img--container {
   margin-top: 10px;
   margin-bottom: 45px;
+  margin-right: 30px;
   & > img {
     width: 300px;
+    border-radius: 50%;
   }
 }
 
-.text-changes {
-  height: 400px;
+.info--container {
+  min-width: 400px;
 }
 
 .input--mail {
@@ -123,6 +165,10 @@ hr {
 .showData {
   width: 400px;
   text-align: center;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-evenly;
+  align-items: flex-start;
 }
 
 .submit {
@@ -130,17 +176,43 @@ hr {
     margin-top: 20px;
     padding: 10px;
     margin-bottom: 30px;
-    padding-bottom: 15px;
     &:hover {
       box-shadow: 0px 0px 5px 5px #b8b8b8;
     }
   }
 
-  #filechooser {
-    margin: 20px;
-  }
+#filechooser {
+  margin: 20px;
+}
 
-  label[for=picture] {
-    margin-right: 20px;
-  }
+label[for=picture] {
+  margin-right: 20px;
+}
+
+#last {
+  margin-bottom: 30px;
+}
+
+.notifications, .notification__container {
+  margin-top: 30px;
+  height: 50px;
+  line-height: 50px;
+}
+
+.notification-enter {
+  opacity: 0;
+}
+
+.notification-enter-active {
+  transition: opacity .8s;
+}
+
+.notification-leave {
+  opacity: 1;
+}
+
+.notification-leave-active {
+  transition: opacity .8s;
+  opacity: 0;
+}
 </style>

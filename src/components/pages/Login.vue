@@ -3,7 +3,7 @@
     <div class="log-buttons">
       <div>
         <button class="login--btn" @click="toggleLogin(1)">Log In</button>
-        <button class="signin--btn" @click="toggleLogin(2)">Sign In</button>
+        <button class="signin--btn" @click="toggleLogin(2)">Sign Up</button>
       </div>
       <div class="undeline underline__move" :class="{'underline__move--forwards': showLogin === false}"></div>
     </div>
@@ -78,8 +78,8 @@ export default {
       })
     },
     signNew () {
-      let user = this.userSignIn;
-      this.signIn({user})
+      this.userSignIn.passwordCompare = this.passwordCompare;
+      this.signIn(this.userSignIn)
         .then(() => {
           this.$router.push('profile')
       })

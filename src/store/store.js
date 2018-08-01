@@ -45,7 +45,8 @@ export const store = new Vuex.Store({
         commit('checkConnection', false);
       });
     },
-    signIn({ commit }, { userSignIn }) {
+    signIn({ commit }, userSignIn) {
+      console.log(userSignIn)
       commit('showNotification', false);
       return axios({
         method: 'post',
@@ -56,10 +57,8 @@ export const store = new Vuex.Store({
       .then(response => {
         console.log(response);
         let user = {};
-        if ( userSignIn.email !== undefined || userSignIn.password !== undefined) {
-          user.email = userSignIn.email;
-          user.password = userSignIn.password;
-        }
+        user.email = userSignIn.email;
+        user.password = userSignIn.password;
         return axios({
           method: 'post',
           url: 'https://banji-mobile-shop.herokuapp.com/users/signin',
@@ -80,7 +79,7 @@ export const store = new Vuex.Store({
         console.log(userSignIn);
         let text = null;
         if ( userSignIn !== undefined) {
-          if(userSignIn.email === '' || userSignIn.password === '' || userSignIn.firstName === '' || userSignIn.lastName === '' || passwordCompare === '' || passwordCompare !== userSignIn.password) {
+          if(userSignIn.email === '' || userSignIn.password === '' || userSignIn.firstName === '' || userSignIn.lastName === '' || userSignIn.passwordCompare === '' || userSignIn.passwordCompare !== userSignIn.password) {
             text = 'Error:\r\nThere is some data missing or passwords dont match. Please fill all inputs correctly.';
           }
         } else {
@@ -105,6 +104,57 @@ export const store = new Vuex.Store({
       .catch(err => {
         console.log(err);
         let text = 'Error:\r\nThere is something wrong. Please try again.';
+        commit('changeNotification', text);
+        commit('showNotification', true);
+        commit('checkConnection', false);
+      });
+    },
+    submitUserChanges({ commit }, recData) {
+      return axios({
+        method: 'patch',
+        url: 'https://banji-mobile-shop.herokuapp.com/users/' + store.getters.getProfileId,
+        data: recData,
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
+      })
+      .then(response => {
+        console.log(response)
+        commit('changeName', {name: recData.firstName})
+        if('picture' in recData && recData['picture'] !== "") {
+          return axios({
+            method: 'patch',
+            url: 'https://banji-mobile-shop.herokuapp.com/users/' + store.getters.getProfileId + '/addPicture',
+            data: recData.picture,
+            headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
+          })
+          .then(resp => {
+            console.log(resp)
+            return Promise.resolve(resp);
+          })
+        } else {
+          return Promise.resolve(response);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        let text = 'Error:\r\nThere is something wrong. Please try again.';
+        commit('changeNotification', text);
+        commit('showNotification', true);
+        commit('checkConnection', false);
+      });
+    },
+    retAllUsers({ commit }) {
+      return axios({
+        method: 'get',
+        url: 'https://banji-mobile-shop.herokuapp.com/users',
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
+      })
+      .then(response => {
+        console.log(response)
+        return Promise.resolve(response);
+      })
+      .catch(err => {
+        console.log(err);
+        let text = 'Error:\r\nThere is something wrong. You can\'t obtain users. Please try again later.';
         commit('changeNotification', text);
         commit('showNotification', true);
         commit('checkConnection', false);
