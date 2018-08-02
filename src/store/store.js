@@ -109,21 +109,22 @@ export const store = new Vuex.Store({
         commit('checkConnection', false);
       });
     },
-    submitUserChanges({ commit }, recData) {
+    submitUserChanges({ commit }, {user, id}) {
+      console.log(id)
       return axios({
         method: 'patch',
-        url: 'https://banji-mobile-shop.herokuapp.com/users/' + store.getters.getProfileId,
-        data: recData,
+        url: 'https://banji-mobile-shop.herokuapp.com/users/' + id,
+        data: user,
         headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
       })
       .then(response => {
         console.log(response)
-        commit('changeName', {name: recData.firstName})
-        if('picture' in recData && recData['picture'] !== "") {
+        commit('changeName', {name: user.firstName})
+        if('picture' in user && typeof user['picture'] !== 'string') {
           return axios({
             method: 'patch',
-            url: 'https://banji-mobile-shop.herokuapp.com/users/' + store.getters.getProfileId + '/addPicture',
-            data: recData.picture,
+            url: 'https://banji-mobile-shop.herokuapp.com/users/' + id + '/addPicture',
+            data: user.picture,
             headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
           })
           .then(resp => {
@@ -155,6 +156,42 @@ export const store = new Vuex.Store({
       .catch(err => {
         console.log(err);
         let text = 'Error:\r\nThere is something wrong. You can\'t obtain users. Please try again later.';
+        commit('changeNotification', text);
+        commit('showNotification', true);
+        commit('checkConnection', false);
+      });
+    },
+    deleteUser({commit}, id) {
+      return axios({
+        method: 'delete',
+        url: 'https://banji-mobile-shop.herokuapp.com/users/' + id,
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
+      })
+      .then(response => {
+        console.log(response)
+        return Promise.resolve(response);
+      })
+      .catch(err => {
+        console.log(err);
+        let text = 'Error:\r\nThere is something wrong. You can\'t delete user. Please try again later.';
+        commit('changeNotification', text);
+        commit('showNotification', true);
+        commit('checkConnection', false);
+      });
+    },
+    retAllDevices({ commit }) {
+      return axios({
+        method: 'get',
+        url: 'https://banji-mobile-shop.herokuapp.com/products',
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
+      })
+      .then(response => {
+        console.log(response)
+        return Promise.resolve(response);
+      })
+      .catch(err => {
+        console.log(err);
+        let text = 'Error:\r\nThere is something wrong. You can\'t obtain products. Please try again later.';
         commit('changeNotification', text);
         commit('showNotification', true);
         commit('checkConnection', false);

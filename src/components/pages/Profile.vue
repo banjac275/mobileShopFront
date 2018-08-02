@@ -66,7 +66,8 @@ export default {
       'getAuthCode',
       'getUserName',
       'getNotificationText',
-      'getNotificationShowCheck'
+      'getNotificationShowCheck',
+      'getProfileId'
     ]),
   },
   methods: {
@@ -93,7 +94,7 @@ export default {
         this.userEdit.password = this.newPassword;
       }
       console.log(this.userEdit.password)
-      this.submitUserChanges(this.userEdit)
+      this.submitUserChanges({user: this.userEdit, id: this.$store.getters.getProfileId})
         .then((data) => {
           console.log(data)
           //this.$router.push('profile')
@@ -120,7 +121,7 @@ export default {
 
 <style lang="scss" scoped>
 * {
-  outline: none;
+  outline-color: #b8b8b8;
 }
 
 .profile--container {
@@ -134,7 +135,7 @@ export default {
 }
 
 hr {
-  width: 90%;
+  width: 60%;
   margin-top: 20px;
   margin-bottom: 20px;
 }

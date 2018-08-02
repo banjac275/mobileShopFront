@@ -107,9 +107,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  * {
-    outline: none;
-  }
+ * {
+  outline-color: #b8b8b8;
+}
 
   .content {
     display: flex;
@@ -156,6 +156,7 @@ export default {
     margin-bottom: 20px;
     line-height: 20px;
     height: 25px;
+    outline: none;
   }
 
   .input--mail {
