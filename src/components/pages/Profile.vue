@@ -4,7 +4,7 @@
     <hr>
     <div class="showData">
       <div class="img--container">
-        <img id="prof-image" src='../../img/user.png' alt="Profile image">
+        <img id="prof-image" src='../../img/user.png' alt="Profile image" class="img">
       </div>
       <div class="info--container">
         <button class="submit" @click="enableEditing = !enableEditing">Edit profile <font-awesome-icon icon="pen" /></button>
@@ -66,8 +66,7 @@ export default {
       'getAuthCode',
       'getUserName',
       'getNotificationText',
-      'getNotificationShowCheck',
-      'getProfileId'
+      'getNotificationShowCheck'
     ]),
   },
   methods: {
@@ -98,6 +97,7 @@ export default {
         .then((data) => {
           console.log(data)
           //this.$router.push('profile')
+          if (this.recvData.picture !== undefined || this.recvData.picture !== null )
           document.querySelector("#prof-image").src = "https://banji-mobile-shop.herokuapp.com/" + this.recvData.picture;
           this.enableEditing = false;
       })
@@ -115,7 +115,12 @@ export default {
             document.querySelector("#prof-image").src = "https://banji-mobile-shop.herokuapp.com/" + this.recvData.picture;
         })
       })
-    }
+    },
+    updated() {
+      console.log(this.recvData.picture)
+    /* if (this.recvData.picture !== undefined && document.querySelector("#prof-image") !== null) document.querySelector("#prof-image").src = "https://banji-mobile-shop.herokuapp.com/" + this.recvData.picture; 
+    else document.querySelector("#prof-image").src = this.defImg; */
+  }
 }
 </script>
 

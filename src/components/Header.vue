@@ -15,7 +15,7 @@
           <div class="profile--dropdown no-border" @click="close">
             <router-link to="/profile" class="height-shrink" v-if="getConnectionCheck">View Profile</router-link>
             <router-link to="/login" class="height-shrink" v-else >Log In/Sign In</router-link>
-            <div class="height-shrink" v-if="getConnectionCheck">Log Out</div>
+            <div class="height-shrink" @click="logOut" v-if="getConnectionCheck">Log Out</div>
           </div>
         </div>
       </div>
@@ -24,11 +24,16 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { mixin as onClickOutside } from 'vue-on-click-outside'
 
 export default {
   mixins: [onClickOutside],
+  filters: {
+    retProfile(value) {
+      
+    }
+  },
   data() {
     return {
       profile: 'Profile'
@@ -42,6 +47,9 @@ export default {
     ])
   },
   methods: {
+    ...mapActions([
+      'logOutUser'
+    ]),
     profileDropdownClick(c) {
       let dropdown = document.querySelector('.profile--dropdown').children;
       let btn = document.querySelector('.profile--dropdown__btn');
@@ -63,6 +71,12 @@ export default {
     },
     close() {
       this.profileDropdownClick(false)
+    },
+    logOut() {
+      this.logOutUser()
+      .then(() => {
+        this.$router.push('login')
+      })
     }
   }
 }

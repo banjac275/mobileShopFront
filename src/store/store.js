@@ -196,6 +196,112 @@ export const store = new Vuex.Store({
         commit('showNotification', true);
         commit('checkConnection', false);
       });
+    },
+    insertDevice({ commit }, device) {
+      commit('showNotification', false);
+      return axios({
+        method: 'post',
+        url: 'https://banji-mobile-shop.herokuapp.com/products',
+        data: device,
+        headers: {'Content-Type': 'multipart/form-data', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
+      })
+      .then(response => {
+        console.log(response);
+        commit('checkConnection', true);
+        Promise.resolve();
+      })
+      .catch(err => {
+        console.log(err);
+        let text = 'Error: Your device can\'t be created. Try again later.';        
+        commit('changeNotification', text);
+        commit('showNotification', true);
+        commit('checkConnection', false);
+      });
+    },
+    removeDevice({ commit }, id) {
+      return axios({
+        method: 'delete',
+        url: 'https://banji-mobile-shop.herokuapp.com/products/' + id,
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
+      })
+      .then(response => {
+        console.log(response)
+        return Promise.resolve(response);
+      })
+      .catch(err => {
+        console.log(err);
+        let text = 'Error:\r\nThere is something wrong. You can\'t delete product. Please try again later.';
+        commit('changeNotification', text);
+        commit('showNotification', true);
+        commit('checkConnection', false);
+      });
+    },
+    newOrder({ commit }, order) {
+      commit('showNotification', false);
+      return axios({
+        method: 'post',
+        url: 'https://banji-mobile-shop.herokuapp.com/orders',
+        data: order,
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
+      })
+      .then(response => {
+        console.log(response);
+        commit('checkConnection', true);
+        Promise.resolve();
+      })
+      .catch(err => {
+        console.log(err);
+        let text = 'Error: Your device can\'t be created. Try again later.';        
+        commit('changeNotification', text);
+        commit('showNotification', true);
+        commit('checkConnection', false);
+      });
+    },
+    retAllOrders({ commit }) {
+      return axios({
+        method: 'get',
+        url: 'https://banji-mobile-shop.herokuapp.com/orders',
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
+      })
+      .then(response => {
+        console.log(response)
+        return Promise.resolve(response);
+      })
+      .catch(err => {
+        console.log(err);
+        let text = 'Error:\r\nThere is something wrong. You can\'t obtain orders. Please try again later.';
+        commit('changeNotification', text);
+        commit('showNotification', true);
+        commit('checkConnection', false);
+      });
+    },
+    deleteOrder({ commit }, id) {
+      return axios({
+        method: 'delete',
+        url: 'https://banji-mobile-shop.herokuapp.com/orders/' + id,
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
+      })
+      .then(response => {
+        console.log(response)
+        return Promise.resolve(response);
+      })
+      .catch(err => {
+        console.log(err);
+        let text = 'Error:\r\nThere is something wrong. You can\'t delete order. Please try again later.';
+        commit('changeNotification', text);
+        commit('showNotification', true);
+        commit('checkConnection', false);
+      });
+    },
+    logOutUser({ commit }) {
+      commit('changeNotification', "");
+      commit('showNotification', false);
+      commit('checkConnection', false);
+      commit('changeName', { name: 'Profile' });
+      commit('changeAuthentication', '');
+      commit('changeType', 'user');
+      commit('showUserCard', false);
+      return Promise.resolve();
     }
   },
   modules: {
