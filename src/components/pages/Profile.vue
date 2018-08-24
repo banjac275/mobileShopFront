@@ -101,23 +101,33 @@ export default {
           document.querySelector("#prof-image").src = "https://banji-mobile-shop.herokuapp.com/" + this.recvData.picture;
           this.enableEditing = false;
       })
+    },
+    imageExists(imageSrc, good, bad) {
+      let img = new Image();
+      img.onload = good; 
+      img.onerror = bad;
+      img.src = imageSrc;
     }
   },
   mounted() {
-      this.$nextTick(() => {
-        let id = this.$store.getters.getProfileId;
-        this.userById({ id })
-        .then((res) => {
-          console.log(res);
-          this.recvData = res.data;
-          this.userEdit = res.data;
-          if(this.recvData.picture !== undefined)
-            document.querySelector("#prof-image").src = "https://banji-mobile-shop.herokuapp.com/" + this.recvData.picture;
-        })
+    this.$nextTick(() => {
+      let id = this.$store.getters.getProfileId;
+      this.userById({ id })
+      .then((res) => {
+        console.log(res);
+        this.recvData = res.data;
+        this.userEdit = res.data;
+        let img = document.querySelector("#prof-image");
+        let link = "https://banji-mobile-shop.herokuapp.com/" + this.recvData.picture;
+        if(this.recvData.picture !== undefined) {
+          img.onerror = () => img.src = this.defImg;
+          img.src = link;
+        }
       })
-    },
-    updated() {
-      console.log(this.recvData.picture)
+    })
+  },
+  updated() {
+    console.log(this.recvData.picture)
     /* if (this.recvData.picture !== undefined && document.querySelector("#prof-image") !== null) document.querySelector("#prof-image").src = "https://banji-mobile-shop.herokuapp.com/" + this.recvData.picture; 
     else document.querySelector("#prof-image").src = this.defImg; */
   }
