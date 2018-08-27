@@ -1,14 +1,14 @@
 <template>
-  <div class="profile--container">
+  <div class="profile">
     <h2>{{ getUserName }}'s Profile</h2>
     <hr>
-    <div class="showData">
-      <div class="img--container">
+    <div class="profile__content">
+      <div class="profile__content__img--container">
         <img id="prof-image" src='../../img/user.png' alt="Profile image" class="img">
       </div>
-      <div class="info--container">
+      <div class="profile__content__info">
         <button class="submit" @click="enableEditing = !enableEditing">Edit profile <font-awesome-icon icon="pen" /></button>
-        <div class="text-changes">
+        <div class="profile__content__info--changes">
           <button class="submit" @click="sendChanges" v-if="enableEditing">Submit changes <font-awesome-icon icon="check" /></button>
           <p>First Name:</p>
           <input class="input--mail" type="text" v-model="userEdit.firstName" v-if="enableEditing">
@@ -29,15 +29,19 @@
             <br>
             <input type="file" id="filechooser" name="picture" v-if="checkedPicture">
             <br>
+            <p v-if="checkedPassword">Old Password:</p>
+            <input class="input--mail" type="password" v-model="oldPassword" v-if="checkedPassword">
             <p v-if="checkedPassword">New Password:</p>
             <input class="input--mail" type="password" v-model="newPassword" v-if="checkedPassword">
+            <p v-if="checkedPassword">Repeat New Password:</p>
+            <input class="input--mail" type="password" v-model="repeatedNewPassword" v-if="checkedPassword">
           </div>
         </div>
       </div>
     </div>
-    <div class="notification__container">
+    <div class="profile__notification">
       <transition name="notification">
-        <p class="notifications" v-if="getNotificationShowCheck">{{getNotificationText}}</p>
+        <p class="profile__notification--text" v-if="getNotificationShowCheck">{{getNotificationText}}</p>
       </transition>
     </div>
   </div>
@@ -45,6 +49,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import imageExists from 'image-exists'
 
 export default {
   data() {
@@ -55,7 +60,9 @@ export default {
       userEdit: {},
       checkedPicture: false,
       checkedPassword: false,
+      oldPassword: '',
       newPassword: '',
+      repeatedNewPassword: ''
     }
   },
   filters: {
@@ -77,36 +84,42 @@ export default {
     ]),
     sendChanges() {
       let formData = new FormData();
+      let check = true;
+      formData.append("firstName", this.recvData.firstName);
+      formData.append("lastName", this.recvData.lastName);
+      formData.append("email", this.recvData.email);
+
       if(this.checkedPicture) {
         let input = document.querySelector("#filechooser");
         if(input.files.length > 0) {
           formData.append("picture", input.files[0]);
-          this.userEdit.picture = formData;
-        } else {
-          this.userEdit.picture;
-        }
-      } else {
-        this.userEdit.picture = "";
+        } 
       }
 
-      if(this.checkedPassword) {
-        this.userEdit.password = this.newPassword;
+      if(this.checkedPassword && this.oldPassword !== this.newPassword && this.newPassword !== "" && this.newPassword === this.repeatedNewPassword) {
+        formData.append("password", this.oldPassword);
+        formData.append("passwordNew", this.newPassword);
+      } else {
+        check = false;
       }
-      console.log(this.userEdit.password)
-      this.submitUserChanges({user: this.userEdit, id: this.$store.getters.getProfileId})
-        .then((data) => {
-          console.log(data)
-          //this.$router.push('profile')
-          if (this.recvData.picture !== undefined || this.recvData.picture !== null )
-          document.querySelector("#prof-image").src = "https://banji-mobile-shop.herokuapp.com/" + this.recvData.picture;
-          this.enableEditing = false;
-      })
+
+      if (check) {
+        this.submitUserChanges({user: formData, id: this.$store.getters.getProfileId})
+          .then((data) => {
+            console.log(data)
+            this.enableEditing = false;
+            this.updatePicture();
+          })
+      }
     },
-    imageExists(imageSrc, good, bad) {
-      let img = new Image();
-      img.onload = good; 
-      img.onerror = bad;
-      img.src = imageSrc;
+    updatePicture() {
+      let pics = document.querySelector("#prof-image");
+      if (this.recvData.picture !== undefined) {
+      let link = "https://banji-mobile-shop.herokuapp.com/" + this.recvData.picture;
+      imageExists(link, (exists) => {
+        (exists) ? pics.src = link : pics.src = "../../../img/user.png";
+      })
+    } 
     }
   },
   mounted() {
@@ -117,56 +130,63 @@ export default {
         console.log(res);
         this.recvData = res.data;
         this.userEdit = res.data;
-        let img = document.querySelector("#prof-image");
-        let link = "https://banji-mobile-shop.herokuapp.com/" + this.recvData.picture;
-        if(this.recvData.picture !== undefined) {
-          img.onerror = () => img.src = this.defImg;
-          img.src = link;
-        }
+        this.updatePicture();
       })
     })
   },
   updated() {
-    console.log(this.recvData.picture)
-    /* if (this.recvData.picture !== undefined && document.querySelector("#prof-image") !== null) document.querySelector("#prof-image").src = "https://banji-mobile-shop.herokuapp.com/" + this.recvData.picture; 
-    else document.querySelector("#prof-image").src = this.defImg; */
+    this.updatePicture();
   }
 }
 </script>
 
 <style lang="scss" scoped>
 * {
-  outline-color: #b8b8b8;
+  outline: none;
 }
 
-.profile--container {
+.profile {
   display: flex;
-  //justify-content: space-between;
   align-items: center;
   flex-flow: column;
   height: calc(100% - 71px);
   width: 100%;
   margin-top: 20px;
+  &__content {
+    width: 700px;
+    text-align: center;
+    display: flex;
+    flex-flow: row;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    &__img--container {
+      margin-top: 10px;
+      margin-bottom: 45px;
+      //margin-right: 30px;
+      border-radius: 50%;
+      overflow: hidden;
+      position: relative;
+      & > img {
+        width: 300px;
+        min-width: 300px;
+        min-height: 300px;
+      }
+    }
+    &__info {
+      min-width: 400px;
+    }
+  }
+  &__notification--text, &__notification {
+  margin-top: 30px;
+  height: 50px;
+  line-height: 50px;
+}
 }
 
 hr {
   width: 60%;
   margin-top: 20px;
   margin-bottom: 20px;
-}
-
-.img--container {
-  margin-top: 10px;
-  margin-bottom: 45px;
-  margin-right: 30px;
-  & > img {
-    width: 300px;
-    border-radius: 50%;
-  }
-}
-
-.info--container {
-  min-width: 400px;
 }
 
 .input--mail {
@@ -176,15 +196,6 @@ hr {
   margin-top: 1px;
   margin-bottom: 11px;
   font-weight: bolder;
-}
-
-.showData {
-  width: 400px;
-  text-align: center;
-  display: flex;
-  flex-flow: row;
-  justify-content: space-evenly;
-  align-items: flex-start;
 }
 
 .submit {
@@ -201,18 +212,12 @@ hr {
   margin: 20px;
 }
 
-label[for=picture] {
-  margin-right: 20px;
-}
-
 #last {
   margin-bottom: 30px;
 }
 
-.notifications, .notification__container {
-  margin-top: 30px;
-  height: 50px;
-  line-height: 50px;
+label[for=picture] {
+  margin-right: 20px;
 }
 
 .notification-enter {

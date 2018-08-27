@@ -30,7 +30,7 @@ export const store = new Vuex.Store({
         commit('changeProfileId', response.data.id);
         (response.data.userType === 'admin') ? commit('showUserCard', true) : commit('showUserCard', false);
         commit('checkConnection', true);
-        Promise.resolve();
+        return Promise.resolve();
       })
       .catch(err => {
         console.log(err);
@@ -43,6 +43,7 @@ export const store = new Vuex.Store({
         commit('changeNotification', text);
         commit('showNotification', true);
         commit('checkConnection', false);
+        return Promise.reject();
       });
     },
     signIn({ commit }, userSignIn) {
@@ -73,7 +74,7 @@ export const store = new Vuex.Store({
         commit('changeType', { type: response.data.userType });
         (response.data.userType === 'admin') ? commit('showUserCard', true) : commit('showUserCard', false);
         commit('checkConnection', true);
-        Promise.resolve();
+        return Promise.resolve();
       })
       .catch(err => {
         console.log(userSignIn);
@@ -88,6 +89,7 @@ export const store = new Vuex.Store({
         commit('changeNotification', text);
         commit('showNotification', true);
         commit('checkConnection', false);
+        return Promise.reject();
       });
     },
     userById({ commit }, { id }) {
@@ -115,25 +117,12 @@ export const store = new Vuex.Store({
         method: 'patch',
         url: 'https://banji-mobile-shop.herokuapp.com/users/' + id,
         data: user,
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
+        headers: {'Authorization': 'Bearer ' + store.getters.getAuthCode }
       })
       .then(response => {
         console.log(response)
         commit('changeName', {name: user.firstName})
-        if('picture' in user && typeof user['picture'] !== 'string') {
-          return axios({
-            method: 'patch',
-            url: 'https://banji-mobile-shop.herokuapp.com/users/' + id + '/addPicture',
-            data: user.picture,
-            headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
-          })
-          .then(resp => {
-            console.log(resp)
-            return Promise.resolve(resp);
-          })
-        } else {
-          return Promise.resolve(response);
-        }
+        Promise.resolve(response);
       })
       .catch(err => {
         console.log(err);

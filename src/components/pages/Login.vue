@@ -73,15 +73,21 @@ export default {
     submit () {
       let user = this.user
       this.logIn({ user })
-        .then(() => {
-          this.$router.push('profile')
+      .then(() => {
+        this.$router.push('profile')
+      })
+      .catch((err) => {
+        this.notify(true);
       })
     },
     signNew () {
       this.userSignIn.passwordCompare = this.passwordCompare;
       this.signIn(this.userSignIn)
-        .then(() => {
-          this.$router.push('profile')
+      .then(() => {
+        this.$router.push('profile')
+      })
+      .catch((err) => {
+        this.notify(true);
       })
     },
     showPassword () {
