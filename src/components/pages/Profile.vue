@@ -84,7 +84,6 @@ export default {
     ]),
     sendChanges() {
       let formData = new FormData();
-      let check = true;
       formData.append("firstName", this.recvData.firstName);
       formData.append("lastName", this.recvData.lastName);
       formData.append("email", this.recvData.email);
@@ -99,27 +98,23 @@ export default {
       if(this.checkedPassword && this.oldPassword !== this.newPassword && this.newPassword !== "" && this.newPassword === this.repeatedNewPassword) {
         formData.append("password", this.oldPassword);
         formData.append("passwordNew", this.newPassword);
-      } else {
-        check = false;
       }
 
-      if (check) {
-        this.submitUserChanges({user: formData, id: this.$store.getters.getProfileId})
-          .then((data) => {
-            console.log(data)
-            this.enableEditing = false;
-            this.updatePicture();
-          })
-      }
+      this.submitUserChanges({user: formData, id: this.$store.getters.getProfileId})
+      .then((data) => {
+        console.log(data)
+        this.enableEditing = false;
+        this.updatePicture();
+      })
     },
     updatePicture() {
       let pics = document.querySelector("#prof-image");
       if (this.recvData.picture !== undefined) {
-      let link = "https://banji-mobile-shop.herokuapp.com/" + this.recvData.picture;
-      imageExists(link, (exists) => {
-        (exists) ? pics.src = link : pics.src = "../../../img/user.png";
-      })
-    } 
+        let link = "http://localhost:3000/" + this.recvData.picture;
+        imageExists(link, (exists) => {
+          (exists) ? pics.src = link : pics.src = "../../../img/user.png";
+        })
+      } 
     }
   },
   mounted() {
@@ -160,16 +155,18 @@ export default {
     justify-content: space-evenly;
     align-items: flex-start;
     &__img--container {
+      max-height: 300px;
+      max-width: 300px;
+      height: 300px;
       margin-top: 10px;
       margin-bottom: 45px;
-      //margin-right: 30px;
       border-radius: 50%;
       overflow: hidden;
       position: relative;
       & > img {
-        width: 300px;
-        min-width: 300px;
-        min-height: 300px;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
     }
     &__info {

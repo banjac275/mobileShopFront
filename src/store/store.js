@@ -18,7 +18,7 @@ export const store = new Vuex.Store({
       commit('showNotification', false);
       return axios({
         method: 'post',
-        url: 'https://banji-mobile-shop.herokuapp.com/users/signin',
+        url: 'http://localhost:3000/users/signin',
         data: user,
         headers: {'Content-Type': 'application/json'}
       })
@@ -47,37 +47,38 @@ export const store = new Vuex.Store({
       });
     },
     signIn({ commit }, userSignIn) {
-      console.log(userSignIn)
+      //console.log(userSignIn)
       commit('showNotification', false);
       return axios({
         method: 'post',
-        url: 'https://banji-mobile-shop.herokuapp.com/users/signup',
+        url: 'http://localhost:3000/users/signup',
         data: userSignIn,
         headers: {'Content-Type': 'application/json'}
       })
       .then(response => {
-        console.log(response);
+        //console.log(response);
         let user = {};
         user.email = userSignIn.email;
         user.password = userSignIn.password;
         return axios({
           method: 'post',
-          url: 'https://banji-mobile-shop.herokuapp.com/users/signin',
+          url: 'http://localhost:3000/users/signin',
           data: user,
           headers: {'Content-Type': 'application/json'}
         })
       })
       .then(resp => {
         console.log(resp);
-        commit('changeName', { name: response.data.userName });
-        commit('changeAuthentication', { auth: response.data.token });
-        commit('changeType', { type: response.data.userType });
-        (response.data.userType === 'admin') ? commit('showUserCard', true) : commit('showUserCard', false);
+        commit('changeName', { name: resp.data.userName });
+        commit('changeAuthentication', { auth: resp.data.token });
+        commit('changeType', { type: resp.data.userType });
+        commit('changeProfileId', resp.data.id);
+        (resp.data.userType === 'admin') ? commit('showUserCard', true) : commit('showUserCard', false);
         commit('checkConnection', true);
         return Promise.resolve();
       })
       .catch(err => {
-        console.log(userSignIn);
+        //console.log(userSignIn);
         let text = null;
         if ( userSignIn !== undefined) {
           if(userSignIn.email === '' || userSignIn.password === '' || userSignIn.firstName === '' || userSignIn.lastName === '' || userSignIn.passwordCompare === '' || userSignIn.passwordCompare !== userSignIn.password) {
@@ -96,7 +97,7 @@ export const store = new Vuex.Store({
       console.log(store.state)
       return axios({
         method: 'get',
-        url: 'https://banji-mobile-shop.herokuapp.com/users/' + id,
+        url: 'http://localhost:3000/users/' + id,
         headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
       })
       .then(response => {
@@ -112,16 +113,16 @@ export const store = new Vuex.Store({
       });
     },
     submitUserChanges({ commit }, {user, id}) {
-      console.log(id)
+      console.log(user)
       return axios({
         method: 'patch',
-        url: 'https://banji-mobile-shop.herokuapp.com/users/' + id,
+        url: 'http://localhost:3000/users/' + id,
         data: user,
         headers: {'Authorization': 'Bearer ' + store.getters.getAuthCode }
       })
       .then(response => {
         console.log(response)
-        commit('changeName', {name: user.firstName})
+        if (user.firstName !== undefined) commit('changeName', {name: user.firstName})
         Promise.resolve(response);
       })
       .catch(err => {
@@ -135,7 +136,7 @@ export const store = new Vuex.Store({
     retAllUsers({ commit }) {
       return axios({
         method: 'get',
-        url: 'https://banji-mobile-shop.herokuapp.com/users',
+        url: 'http://localhost:3000/users',
         headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
       })
       .then(response => {
@@ -153,7 +154,7 @@ export const store = new Vuex.Store({
     deleteUser({commit}, id) {
       return axios({
         method: 'delete',
-        url: 'https://banji-mobile-shop.herokuapp.com/users/' + id,
+        url: 'http://localhost:3000/users/' + id,
         headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
       })
       .then(response => {
@@ -171,7 +172,7 @@ export const store = new Vuex.Store({
     retAllDevices({ commit }) {
       return axios({
         method: 'get',
-        url: 'https://banji-mobile-shop.herokuapp.com/products',
+        url: 'http://localhost:3000/products',
         headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
       })
       .then(response => {
@@ -190,7 +191,7 @@ export const store = new Vuex.Store({
       commit('showNotification', false);
       return axios({
         method: 'post',
-        url: 'https://banji-mobile-shop.herokuapp.com/products',
+        url: 'http://localhost:3000/products',
         data: device,
         headers: {'Content-Type': 'multipart/form-data', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
       })
@@ -210,7 +211,7 @@ export const store = new Vuex.Store({
     removeDevice({ commit }, id) {
       return axios({
         method: 'delete',
-        url: 'https://banji-mobile-shop.herokuapp.com/products/' + id,
+        url: 'http://localhost:3000/products/' + id,
         headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
       })
       .then(response => {
@@ -229,7 +230,7 @@ export const store = new Vuex.Store({
       commit('showNotification', false);
       return axios({
         method: 'post',
-        url: 'https://banji-mobile-shop.herokuapp.com/orders',
+        url: 'http://localhost:3000/orders',
         data: order,
         headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
       })
@@ -249,7 +250,7 @@ export const store = new Vuex.Store({
     retAllOrders({ commit }) {
       return axios({
         method: 'get',
-        url: 'https://banji-mobile-shop.herokuapp.com/orders',
+        url: 'http://localhost:3000/orders',
         headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
       })
       .then(response => {
@@ -267,7 +268,7 @@ export const store = new Vuex.Store({
     deleteOrder({ commit }, id) {
       return axios({
         method: 'delete',
-        url: 'https://banji-mobile-shop.herokuapp.com/orders/' + id,
+        url: 'http://localhost:3000/orders/' + id,
         headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
       })
       .then(response => {

@@ -3,8 +3,8 @@
       <div class="top--container"><h2>Users</h2> <button class="submit" v-if="enableEditing" @click="checkButtons">Edit users <font-awesome-icon icon="pen" /></button></div>
       <hr>
       <div class="middle--container">
-        <div v-for="item in recvData" :key="item._id">
-          <users-user :user="item" :editCheck="editCheck" :changeUser="changeUser"></users-user>
+        <div v-for="(item, index) in recvData" :key="item._id">
+          <users-user :user="item" :editCheck="editCheck" :changeUser="changeUser" @editChecked="editCheck = $event" @elementDeleted="deleted($event, index)"></users-user>
         </div>
       </div>
     </div>
@@ -33,22 +33,19 @@ export default {
     ]),
     checkButtons() {
       this.editCheck = !this.editCheck;
-      if(this.changeUser === true) this.changeUser = !this.changeUser
+    },
+    deleted(u, ind) {
+      let parent = document.querySelector(".middle--container");
+      console.log(parent.childNodes)
+      parent.childNodes.forEach((el, index) => {
+        if(ind === index) el.parentNode.removeChild(el);
+      })
     }
   },
   computed: {
     ...mapGetters([
       'getUserType'
     ])
-  },
-  events: {
-    changed(id) {
-      this.retAllUsers()
-      .then(data => {
-        this.recvData = data.data.products;
-        if(this.$store.getters.getUserType === "admin") this.enableEditing = true;
-      })
-    }
   },
   mounted() {
     this.$nextTick(() => {

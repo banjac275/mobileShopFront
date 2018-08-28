@@ -13,7 +13,9 @@
         <div><strong>Orders:</strong> {{ user.orders | orderCount }}</div>
       </div>
       <div class="middle--container__buttons">
-        <button class="submit" v-if="changeUser" @click="confirmClick($event)">Confirm</button><button class="submit type--btn" v-if="editCheck" @click="typeClicked($event)">Change type</button><button class="submit" v-if="editCheck" @click="deleteClicked($event)">Delete user</button>
+        <button class="submit" v-if="changeUser" @click="confirmClick($event)">Confirm</button>
+        <button class="submit type--btn" v-if="editCheck" @click="typeClicked($event)"><span v-if="changeUser">Cancel change</span><span v-else>Change type</span></button>
+        <button class="submit" v-if="editCheck" @click="deleteClicked($event)">Delete user</button>
       </div> 
     </div>
     <hr>  
@@ -25,10 +27,12 @@ import { mapActions, mapGetters } from 'vuex'
 import imageExists from 'image-exists'
 
 export default {
-  props: ['user', 'editCheck', 'changeUser'],
+  props: ['user', 'editCheck'],
   data() {
     return {
-      enableEditing: false
+      enableEditing: false,
+      changeUser: false,
+      userBackup: this.user
     }
   },
   methods: {
@@ -36,36 +40,47 @@ export default {
       'submitUserChanges',
       'deleteUser'
     ]),
-    checkButtons() {
-      this.editCheck = !this.editCheck;
-      if(this.changeUser === true) this.changeUser = !this.changeUser
-    },
     typeClicked(event) {
       this.changeUser = !this.changeUser;
     },
     confirmClick(event) {
       this.changeUser = !this.changeUser;
-      console.log(this.user._id)
-      let check = true;
       //sends user data for change in database
-      this.submitUserChanges( { user: { accType: this.user.accType}, id: this.user._id })
-      .then((data) => {
-        console.log(data)
-        this.$emit("changed", this.user._id);
-      })
+      if (this.$store.getters.getProfileId === this.user._id) {
+        this.submitUserChanges( { user: { accType: this.user.accType}, id: this.user._id })
+        .then((data) => {
+          console.log(data)
+          this.changeUser = false;
+          this.$emit('editChecked', !this.editCheck)
+        })
+      }
     },
     deleteClicked(event) {
       this.changeUser = !this.changeUser;
-      this.deleteUser( this.user._id )
-      .then((data) => {
-        console.log(data)
-        this.$emit("changed", this.user._id);
-      })
+      if (this.$store.getters.getProfileId === this.user._id) {
+        this.deleteUser( this.user._id )
+        .then((data) => {
+          console.log(data)
+          this.changeUser = false;
+          this.$emit('editChecked', !this.editCheck)
+          this.$emit('elementDeleted', this.userBackup)
+        })
+      }
+    },
+    updatePicture() {
+      let pics = document.querySelector(".pics");
+      if (this.user.picture !== undefined) {
+        let link = "http://localhost:3000/" + this.user.picture;
+        imageExists(link, (exists) => {
+          (exists) ? pics.src = link : pics.src = "../../../img/user.png";
+        })
+      } 
     }
   },
   computed: {
     ...mapGetters([
-      'getUserType'
+      'getUserType',
+      'getProfileId'
     ])
   },
   filters: {
@@ -73,14 +88,14 @@ export default {
       return value.length;
     }
   },
+  mounted() {
+    this.$nextTick(() => {
+      this.updatePicture();
+    })
+  },
   updated() {
-    let pics = document.querySelector(".pics");
-    if (this.user.picture !== undefined) {
-      let link = "https://banji-mobile-shop.herokuapp.com/" + this.user.picture;
-      imageExists(link, (exists) => {
-        (exists) ? pics.src = link : pics.src = "../../../img/user.png";
-      })
-    } 
+    this.updatePicture();
+    //this.change = false;
   }
 }
 </script>
@@ -123,6 +138,7 @@ input {
 .img--container {
   min-width: 140px;
   max-width: 140px;
+  height: 140px;
   margin-top: 10px;
   margin-bottom: 10px;
   //margin-right: 30px;
@@ -131,9 +147,9 @@ input {
   overflow: hidden;
   position: relative;
   & > img {
-    min-width: 140px;
-    max-width: 140px;
-    min-height: 100px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 

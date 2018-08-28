@@ -145,7 +145,7 @@ export default {
   updated() {
     let pics = document.querySelectorAll(".img");
     pics.forEach((element, index) => {
-      if (this.recvData[index].picture !== undefined) element.src = "https://banji-mobile-shop.herokuapp.com/" + this.recvData[index].picture; 
+      if (this.recvData[index].picture !== undefined) element.src = "http://localhost:3000/" + this.recvData[index].picture; 
     });
   }
 }
