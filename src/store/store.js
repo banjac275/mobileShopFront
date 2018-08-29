@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
 import auth from './modules/auth'
 import name from './modules/name'
 import notificationText from './modules/notificationText'
@@ -9,6 +8,7 @@ import userType from './modules/userType'
 import connectionCheck from './modules/connectionCheck'
 import userCheck from './modules/userCheck'
 import profileId from './modules/profileId'
+import api from '@/services/api/'
 
 Vue.use(Vuex)
 
@@ -16,14 +16,8 @@ export const store = new Vuex.Store({
   actions: {
     logIn({ commit }, { user }) {
       commit('showNotification', false);
-      return axios({
-        method: 'post',
-        url: 'http://localhost:3000/users/signin',
-        data: user,
-        headers: {'Content-Type': 'application/json'}
-      })
+      return api.logInUser(user)
       .then(response => {
-        console.log(response);
         commit('changeName', { name: response.data.userName });
         commit('changeAuthentication', { auth: response.data.token });
         commit('changeType', { type: response.data.userType });
@@ -33,7 +27,6 @@ export const store = new Vuex.Store({
         return Promise.resolve();
       })
       .catch(err => {
-        console.log(err);
         let text = null;
         if(user.email === '' || user.password === '') {
           text = 'Error:\r\nThere is email or password missing. Please fill inputs or sign up.';
@@ -47,28 +40,15 @@ export const store = new Vuex.Store({
       });
     },
     signIn({ commit }, userSignIn) {
-      //console.log(userSignIn)
       commit('showNotification', false);
-      return axios({
-        method: 'post',
-        url: 'http://localhost:3000/users/signup',
-        data: userSignIn,
-        headers: {'Content-Type': 'application/json'}
-      })
+      return api.signUpUser(userSignIn)
       .then(response => {
-        //console.log(response);
         let user = {};
         user.email = userSignIn.email;
         user.password = userSignIn.password;
-        return axios({
-          method: 'post',
-          url: 'http://localhost:3000/users/signin',
-          data: user,
-          headers: {'Content-Type': 'application/json'}
-        })
+        return api.logInUser(user)
       })
       .then(resp => {
-        console.log(resp);
         commit('changeName', { name: resp.data.userName });
         commit('changeAuthentication', { auth: resp.data.token });
         commit('changeType', { type: resp.data.userType });
@@ -78,7 +58,6 @@ export const store = new Vuex.Store({
         return Promise.resolve();
       })
       .catch(err => {
-        //console.log(userSignIn);
         let text = null;
         if ( userSignIn !== undefined) {
           if(userSignIn.email === '' || userSignIn.password === '' || userSignIn.firstName === '' || userSignIn.lastName === '' || userSignIn.passwordCompare === '' || userSignIn.passwordCompare !== userSignIn.password) {
@@ -94,18 +73,11 @@ export const store = new Vuex.Store({
       });
     },
     userById({ commit }, { id }) {
-      console.log(store.state)
-      return axios({
-        method: 'get',
-        url: 'http://localhost:3000/users/' + id,
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
-      })
+      return api.obtainUser(id, store.getters.getAuthCode)
       .then(response => {
-        console.log(response)
         return Promise.resolve(response);
       })
       .catch(err => {
-        console.log(err);
         let text = 'Error:\r\nThere is something wrong. Please try again.';
         commit('changeNotification', text);
         commit('showNotification', true);
@@ -113,20 +85,16 @@ export const store = new Vuex.Store({
       });
     },
     submitUserChanges({ commit }, {user, id}) {
-      console.log(user)
-      return axios({
-        method: 'patch',
-        url: 'http://localhost:3000/users/' + id,
-        data: user,
-        headers: {'Authorization': 'Bearer ' + store.getters.getAuthCode }
-      })
+      return api.changeUser(id, user, store.getters.getAuthCode)
       .then(response => {
-        console.log(response)
-        if (user.firstName !== undefined) commit('changeName', {name: user.firstName})
-        Promise.resolve(response);
+        return api.obtainUser(id, store.getters.getAuthCode)     
+      })
+      .then(resp => {
+        console.log(resp)
+        if (resp.data.firstName !== undefined) commit('changeName', {name: resp.data.firstName})
+        return Promise.resolve(resp);
       })
       .catch(err => {
-        console.log(err);
         let text = 'Error:\r\nThere is something wrong. Please try again.';
         commit('changeNotification', text);
         commit('showNotification', true);
@@ -134,17 +102,11 @@ export const store = new Vuex.Store({
       });
     },
     retAllUsers({ commit }) {
-      return axios({
-        method: 'get',
-        url: 'http://localhost:3000/users',
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
-      })
+      return api.allUsers(store.getters.getAuthCode)
       .then(response => {
-        console.log(response)
         return Promise.resolve(response);
       })
       .catch(err => {
-        console.log(err);
         let text = 'Error:\r\nThere is something wrong. You can\'t obtain users. Please try again later.';
         commit('changeNotification', text);
         commit('showNotification', true);
@@ -152,17 +114,11 @@ export const store = new Vuex.Store({
       });
     },
     deleteUser({commit}, id) {
-      return axios({
-        method: 'delete',
-        url: 'http://localhost:3000/users/' + id,
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
-      })
+      return api.eraseUser(id, store.getters.getAuthCode)
       .then(response => {
-        console.log(response)
         return Promise.resolve(response);
       })
       .catch(err => {
-        console.log(err);
         let text = 'Error:\r\nThere is something wrong. You can\'t delete user. Please try again later.';
         commit('changeNotification', text);
         commit('showNotification', true);
@@ -170,17 +126,11 @@ export const store = new Vuex.Store({
       });
     },
     retAllDevices({ commit }) {
-      return axios({
-        method: 'get',
-        url: 'http://localhost:3000/products',
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
-      })
+      return api.allDevices(store.getters.getAuthCode)
       .then(response => {
-        console.log(response)
         return Promise.resolve(response);
       })
       .catch(err => {
-        console.log(err);
         let text = 'Error:\r\nThere is something wrong. You can\'t obtain products. Please try again later.';
         commit('changeNotification', text);
         commit('showNotification', true);
@@ -189,19 +139,12 @@ export const store = new Vuex.Store({
     },
     insertDevice({ commit }, device) {
       commit('showNotification', false);
-      return axios({
-        method: 'post',
-        url: 'http://localhost:3000/products',
-        data: device,
-        headers: {'Content-Type': 'multipart/form-data', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
-      })
+      return api.newDevice(device, store.getters.getAuthCode)
       .then(response => {
-        console.log(response);
         commit('checkConnection', true);
         Promise.resolve();
       })
       .catch(err => {
-        console.log(err);
         let text = 'Error: Your device can\'t be created. Try again later.';        
         commit('changeNotification', text);
         commit('showNotification', true);
@@ -209,17 +152,11 @@ export const store = new Vuex.Store({
       });
     },
     removeDevice({ commit }, id) {
-      return axios({
-        method: 'delete',
-        url: 'http://localhost:3000/products/' + id,
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
-      })
+      return api.eraseDevice(id, store.getters.getAuthCode)
       .then(response => {
-        console.log(response)
         return Promise.resolve(response);
       })
       .catch(err => {
-        console.log(err);
         let text = 'Error:\r\nThere is something wrong. You can\'t delete product. Please try again later.';
         commit('changeNotification', text);
         commit('showNotification', true);
@@ -228,19 +165,12 @@ export const store = new Vuex.Store({
     },
     newOrder({ commit }, order) {
       commit('showNotification', false);
-      return axios({
-        method: 'post',
-        url: 'http://localhost:3000/orders',
-        data: order,
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
-      })
+      return api.createOrder(order, store.getters.getAuthCode)
       .then(response => {
-        console.log(response);
         commit('checkConnection', true);
         Promise.resolve();
       })
       .catch(err => {
-        console.log(err);
         let text = 'Error: Your device can\'t be created. Try again later.';        
         commit('changeNotification', text);
         commit('showNotification', true);
@@ -248,17 +178,11 @@ export const store = new Vuex.Store({
       });
     },
     retAllOrders({ commit }) {
-      return axios({
-        method: 'get',
-        url: 'http://localhost:3000/orders',
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
-      })
+      return api.allOrders(store.getters.getAuthCode)
       .then(response => {
-        console.log(response)
         return Promise.resolve(response);
       })
       .catch(err => {
-        console.log(err);
         let text = 'Error:\r\nThere is something wrong. You can\'t obtain orders. Please try again later.';
         commit('changeNotification', text);
         commit('showNotification', true);
@@ -266,17 +190,11 @@ export const store = new Vuex.Store({
       });
     },
     deleteOrder({ commit }, id) {
-      return axios({
-        method: 'delete',
-        url: 'http://localhost:3000/orders/' + id,
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + store.getters.getAuthCode }
-      })
+      return api.eraseOrder(id, store.getters.getAuthCode)
       .then(response => {
-        console.log(response)
         return Promise.resolve(response);
       })
       .catch(err => {
-        console.log(err);
         let text = 'Error:\r\nThere is something wrong. You can\'t delete order. Please try again later.';
         commit('changeNotification', text);
         commit('showNotification', true);

@@ -4,7 +4,7 @@
     <hr>
     <div class="profile__content">
       <div class="profile__content__img--container">
-        <img id="prof-image" src='../../img/user.png' alt="Profile image" class="img">
+        <img id="prof-image" :src='retPic' alt="Profile image" class="img">
       </div>
       <div class="profile__content__info">
         <button class="submit" @click="enableEditing = !enableEditing">Edit profile <font-awesome-icon icon="pen" /></button>
@@ -55,7 +55,6 @@ export default {
   data() {
     return {
       recvData: {},
-      defImg: '../../img/user.png',
       enableEditing: false,
       userEdit: {},
       checkedPicture: false,
@@ -75,6 +74,9 @@ export default {
       'getNotificationText',
       'getNotificationShowCheck'
     ]),
+    retPic() {
+      return (this.recvData.picture !== undefined) ? "http://localhost:3000/" + this.recvData.picture : "";
+    }
   },
   methods: {
     ...mapActions([
@@ -103,18 +105,9 @@ export default {
       this.submitUserChanges({user: formData, id: this.$store.getters.getProfileId})
       .then((data) => {
         console.log(data)
+        this.recvData = data.data;
         this.enableEditing = false;
-        this.updatePicture();
       })
-    },
-    updatePicture() {
-      let pics = document.querySelector("#prof-image");
-      if (this.recvData.picture !== undefined) {
-        let link = "http://localhost:3000/" + this.recvData.picture;
-        imageExists(link, (exists) => {
-          (exists) ? pics.src = link : pics.src = "../../../img/user.png";
-        })
-      } 
     }
   },
   mounted() {
@@ -125,12 +118,8 @@ export default {
         console.log(res);
         this.recvData = res.data;
         this.userEdit = res.data;
-        this.updatePicture();
       })
     })
-  },
-  updated() {
-    this.updatePicture();
   }
 }
 </script>

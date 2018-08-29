@@ -2,7 +2,7 @@
   <div>
     <div class="users--elements">
       <div class="img--container">
-        <img src="../../../img/user.png" alt="profile pic" class="pics">
+        <img :src="showImg" alt="profile pic" class="pics">
       </div> 
       <div class="middle--container__info">
         <div><strong>First Name:</strong> {{ user.firstName }}</div>
@@ -32,6 +32,7 @@ export default {
     return {
       enableEditing: false,
       changeUser: false,
+      defImg: "http://localhost:8080/static/img/user.1897f97.png",
       userBackup: this.user
     }
   },
@@ -41,61 +42,43 @@ export default {
       'deleteUser'
     ]),
     typeClicked(event) {
-      this.changeUser = !this.changeUser;
+      if (this.$store.getters.getProfileId !== this.user._id) this.changeUser = !this.changeUser;
     },
     confirmClick(event) {
       this.changeUser = !this.changeUser;
       //sends user data for change in database
-      if (this.$store.getters.getProfileId === this.user._id) {
+      if (this.$store.getters.getProfileId !== this.user._id) {
         this.submitUserChanges( { user: { accType: this.user.accType}, id: this.user._id })
         .then((data) => {
-          console.log(data)
           this.changeUser = false;
           this.$emit('editChecked', !this.editCheck)
         })
       }
     },
     deleteClicked(event) {
-      this.changeUser = !this.changeUser;
-      if (this.$store.getters.getProfileId === this.user._id) {
+      if (this.$store.getters.getProfileId !== this.user._id) {
         this.deleteUser( this.user._id )
         .then((data) => {
-          console.log(data)
           this.changeUser = false;
           this.$emit('editChecked', !this.editCheck)
           this.$emit('elementDeleted', this.userBackup)
         })
       }
-    },
-    updatePicture() {
-      let pics = document.querySelector(".pics");
-      if (this.user.picture !== undefined) {
-        let link = "http://localhost:3000/" + this.user.picture;
-        imageExists(link, (exists) => {
-          (exists) ? pics.src = link : pics.src = "../../../img/user.png";
-        })
-      } 
     }
   },
   computed: {
     ...mapGetters([
       'getUserType',
       'getProfileId'
-    ])
+    ]),
+    showImg() {
+      return (this.user.picture !== undefined) ? "http://localhost:3000/"+this.user.picture : this.defImg;
+    }
   },
   filters: {
     orderCount(value) {
       return value.length;
     }
-  },
-  mounted() {
-    this.$nextTick(() => {
-      this.updatePicture();
-    })
-  },
-  updated() {
-    this.updatePicture();
-    //this.change = false;
   }
 }
 </script>
