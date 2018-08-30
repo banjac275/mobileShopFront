@@ -32,7 +32,7 @@ export default {
     return {
       enableEditing: false,
       changeUser: false,
-      defImg: "http://localhost:8080/static/img/user.1897f97.png",
+      defImg: "../../img/user.png",
       userBackup: this.user
     }
   },
@@ -72,7 +72,7 @@ export default {
       'getProfileId'
     ]),
     showImg() {
-      return (this.user.picture !== undefined) ? "http://localhost:3000/"+this.user.picture : this.defImg;
+      return (this.user.picture !== undefined ) ? "http://localhost:3000/"+this.user.picture : this.defImg;
     }
   },
   filters: {

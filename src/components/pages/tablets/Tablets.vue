@@ -3,36 +3,40 @@
       <div class="container__top flex"><h2>Tablets</h2> <button class="submit" v-if="getUserCheck" @click="addPhone = !addPhone">Add tablet <font-awesome-icon icon="pen" /></button></div>
       <hr>
       <div class="container__middle flex">
-        <div v-for="item in recvData" :key="item._id">
-          <div class="phone flex">
-            <h4><strong>{{item.name}}</strong></h4>
+        <transition name="slider" mode="out-in">
+          <div class="phone flex" v-if="addPhone" key="second">
+            <h4>name: <strong><input type="text" v-model="newPhoneData.name"></strong></h4>
             <div class="img__container">
-              <img src="../../img/phone.png" alt="phone pic" class="img">
+              <input type="file" id="filechooser" name="picture">
             </div>
-            <div><strong>Manufacturer:</strong> {{item.manufacturer}}</div>
-            <div><strong>Released:</strong> {{item.released}}</div>
-            <div class="description"><strong>Description:</strong> {{item.description}}</div>
-            <div><strong>Number available:</strong> {{item.numInStock}}</div>
+            <div><strong>Manufacturer:</strong> <input type="text" v-model="newPhoneData.manufacturer"></div>
+            <div><strong>Released:</strong> <input type="text" v-model="newPhoneData.released"></div>
+            <div class="description"><strong>Description:</strong> <input type="text" v-model="newPhoneData.description"></div>
+            <div><strong>Number available:</strong> <input type="text" v-model="newPhoneData.numInStock"></div>
             <div class="phone__buttons">
-              <button class="submit" @click="removePhone($event)" v-if="getUserCheck">Delete Tablet</button>
-              <button class="submit" @click="addToOrders($event)" v-else>Buy Tablet</button>
+              <button class="submit" @click="insertPhone">Add Tablet <font-awesome-icon icon="pen" /></button>
+              <button class="submit" @click="cancelInsert">Cancel</button>
             </div>
           </div>
-        </div>
-        <div class="phone flex" v-if="addPhone">
-          <h4>name: <strong><input type="text" v-model="newPhoneData.name"></strong></h4>
-          <div class="img__container">
-            <input type="file" id="filechooser" name="picture">
+          <div v-else key="first" class="container__middle--child flex">
+            <div v-for="(item, index) in recvData" :key="item._id">
+              <div class="phone flex">
+                <h4><strong>{{item.name}}</strong></h4>
+                <div class="img__container">
+                  <img :src="setPic(index)" alt="phone pic" class="img">
+                </div>
+                <div><strong>Manufacturer:</strong> {{item.manufacturer}}</div>
+                <div><strong>Released:</strong> {{item.released}}</div>
+                <div class="description"><strong>Description:</strong> {{item.description}}</div>
+                <div><strong>Number available:</strong> {{item.numInStock}}</div>
+                <div class="phone__buttons">
+                  <button class="submit" @click="removePhone($event)" v-if="getUserCheck">Delete Tablet</button>
+                  <button class="submit" @click="addToOrders($event)" v-else>Buy Tablet</button>
+                </div>
+              </div>
+            </div>
           </div>
-          <div><strong>Manufacturer:</strong> <input type="text" v-model="newPhoneData.manufacturer"></div>
-          <div><strong>Released:</strong> <input type="text" v-model="newPhoneData.released"></div>
-          <div class="description"><strong>Description:</strong> <input type="text" v-model="newPhoneData.description"></div>
-          <div><strong>Number available:</strong> <input type="text" v-model="newPhoneData.numInStock"></div>
-          <div class="phone__buttons">
-            <button class="submit" @click="insertPhone">Add Tablet <font-awesome-icon icon="pen" /></button>
-            <button class="submit" @click="cancelInsert">Cancel</button>
-          </div>
-        </div>
+        </transition>
       </div>
     </div>
 </template>
@@ -77,7 +81,7 @@ export default {
         .then(data => {
           console.log(data);
           data.data.products.forEach(el => {
-            if (el.type === 'phone') this.recvData.push(el);
+            if (el.type === 'tablet') this.recvData.push(el);
           });
           if(this.$store.getters.getUserType === "admin") this.enableEditing = true;
         })
@@ -121,6 +125,9 @@ export default {
     cancelInsert() {
       this.addPhone = !this.addPhone;
       this.newPhoneData = {};
+    },
+    setPic(index) {
+      return (this.recvData[index].picture !== undefined) ? "http://localhost:3000/" + this.recvData[index].picture : this.defPic;
     }
   },
   computed: {
@@ -168,7 +175,9 @@ export default {
 
 .container__middle {
   max-width: 60%;
-  flex-wrap: wrap;
+  &--child {
+    flex-wrap: wrap;
+  }
 }
 
 hr {
@@ -215,5 +224,16 @@ input[type=text] {
   &:hover {
     box-shadow: 0px 0px 5px 5px #b8b8b8;
   }
+}
+
+.slider-leave-active,
+.slider-enter-active {
+  transition: .6s;
+}
+.slider-enter {
+  transform: translate(300%, 0);
+}
+.slider-leave-to {
+  transform: translate(300%, 0);
 }
 </style>
