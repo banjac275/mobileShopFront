@@ -5,7 +5,7 @@ import Search from '../components/pages/Search.vue'
 import Phones from '../components/pages/phones/Phones.vue'
 import Tablets from '../components/pages/tablets/Tablets.vue'
 import Users from '../components/pages/users/Users.vue'
-import Cart from '../components/pages/Cart.vue'
+import Cart from '../components/pages/orders/Cart.vue'
 import Login from '../components/pages/Login.vue'
 import Profile from '../components/pages/Profile.vue'
 

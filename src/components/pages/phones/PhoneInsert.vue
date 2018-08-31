@@ -41,8 +41,7 @@ export default {
       formData.append("description", this.newPhoneData.description);
       formData.append("numInStock", this.newPhoneData.numInStock);
       formData.append("type", this.newPhoneData.type);
-      console.log(this.newPhoneData)
-      if(this.newPhoneData.name !== undefined || this.newPhoneData.name !== "") {
+      if(Object.keys(this.newPhoneData).length > 5) {
         this.insertDevice(formData)
         .then(res => {
           this.$emit('elementAdded', true);

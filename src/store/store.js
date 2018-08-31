@@ -125,6 +125,18 @@ export const store = new Vuex.Store({
         commit('checkConnection', false);
       });
     },
+    retDevice({ commit }, id) {
+      return api.obtainDevice(id, store.getters.getAuthCode)
+      .then(response => {
+        return Promise.resolve(response)
+      })
+      .catch(err => {
+        let text = 'Error:\r\nThere is something wrong. You can\'t obtain product. Please try again later.';
+        commit('changeNotification', text);
+        commit('showNotification', true);
+        commit('checkConnection', false);
+      })
+    },
     retAllDevices({ commit }) {
       return api.allDevices(store.getters.getAuthCode)
       .then(response => {

@@ -21,6 +21,9 @@ export default {
   eraseUser (id, header) {
     return axios({method: 'delete', url: config.users_url + '/' + id, headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + header}});
   },
+  obtainDevice (id, header) {
+    return axios({method: 'get', url: config.products_url + '/' + id, headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + header}})
+  },
   allDevices (header) {
     return axios({method: 'get', url: config.products_url, headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + header}})
   },
