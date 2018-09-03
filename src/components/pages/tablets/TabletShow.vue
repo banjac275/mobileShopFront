@@ -45,7 +45,10 @@ export default {
       this.removeDevice( this.phone._id )
       .then((data) => {
         this.$emit('elementDeleted', this.phoneBackup);
-      })  
+      })
+      .catch(err => {
+        if(err === "Auth failed") this.$router.push('login')
+      }) 
     },
     addToOrders() {
       let order = {
@@ -57,6 +60,9 @@ export default {
       this.newOrder(order)
       .then(() => {
         console.log("bought")
+      })
+      .catch(err => {
+        if(err === "Auth failed") this.$router.push('login')
       })
     }
   }

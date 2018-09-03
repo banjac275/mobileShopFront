@@ -17,8 +17,22 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
-  
+  methods:{
+    ...mapActions([
+      'onStart',
+    ]),
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.onStart()
+      .then((res) => {
+        console.log(res);
+      })
+    })
+  }
 }
 </script>
 

@@ -234,4 +234,13 @@ export default {
   .underline__move--forwards {
     transform: translate(110%, 0);
   }
+
+  @media screen and (min-width: 320px) {
+    .input--mail {
+      width: 300px;
+    }
+    .input--password {
+      width: 270px;
+    }
+  }
 </style>

@@ -65,12 +65,18 @@ export default {
           if (el.userId !== null) this.recvData.push(el);
         })
       })
+      .catch(err => {
+        if(err === "Auth failed") this.$router.push('login')
+      })
     },
     updateUser() {
       let id = this.getProfileId;       
       this.userById({id})
       .then(data => {
         this.userData = data.data.orders;
+      })
+      .catch(err => {
+        if(err === "Auth failed") this.$router.push('login')
       })
     }
   },

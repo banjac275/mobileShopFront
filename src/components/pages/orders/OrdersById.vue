@@ -35,6 +35,9 @@ export default {
       .then(() => {
         this.$emit('userCanceled', false);
       })
+      .catch(err => {
+        if(err === "Auth failed") this.$router.push('login')
+      })
     }
   },
   mounted() {
@@ -42,6 +45,9 @@ export default {
       this.retDevice(this.user.productId)
       .then(el => {
         this.recvData = el.data;
+      })
+      .catch(err => {
+        if(err === "Auth failed") this.$router.push('login')
       })
     })
   }

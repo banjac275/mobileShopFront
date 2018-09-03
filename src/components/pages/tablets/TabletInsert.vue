@@ -47,6 +47,9 @@ export default {
           this.$emit('elementAdded', true);
           this.$emit('canceledInput', false);
         })
+        .catch(err => {
+        if(err === "Auth failed") this.$router.push('login')
+      })
       }
     },
     cancelInsert() {

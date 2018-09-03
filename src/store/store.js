@@ -24,6 +24,7 @@ export const store = new Vuex.Store({
         commit('changeProfileId', response.data.id);
         (response.data.userType === 'admin') ? commit('showUserCard', true) : commit('showUserCard', false);
         commit('checkConnection', true);
+        localStorage.setItem('storedUser', JSON.stringify(store.state))
         return Promise.resolve();
       })
       .catch(err => {
@@ -33,10 +34,10 @@ export const store = new Vuex.Store({
         } else {
           text = 'Error: Your account can\'t be found due to wrong password or e-mail, or simply because it doesn\'t exist. Repair e-mail and/or password or sign up.';        
         }
+        if (err.response.data.message === "Auth failed") {commit('checkConnection', false); text = 'Authentication failed. Please log in again.';};
         commit('changeNotification', text);
         commit('showNotification', true);
-        commit('checkConnection', false);
-        return Promise.reject();
+        return Promise.reject(err.response.data.message);
       });
     },
     signIn({ commit }, userSignIn) {
@@ -55,6 +56,7 @@ export const store = new Vuex.Store({
         commit('changeProfileId', resp.data.id);
         (resp.data.userType === 'admin') ? commit('showUserCard', true) : commit('showUserCard', false);
         commit('checkConnection', true);
+        localStorage.setItem('storedUser', store.state)
         return Promise.resolve();
       })
       .catch(err => {
@@ -66,10 +68,10 @@ export const store = new Vuex.Store({
         } else {
           text = 'Error: Your account wasn\'t made due to an error. Please try again.';
         }
+        if (err.response.data.message === "Auth failed") {commit('checkConnection', false); text = 'Authentication failed. Please log in again.';};
         commit('changeNotification', text);
         commit('showNotification', true);
-        commit('checkConnection', false);
-        return Promise.reject();
+        return Promise.reject(err.response.data.message);
       });
     },
     userById({ commit }, { id }) {
@@ -79,9 +81,9 @@ export const store = new Vuex.Store({
       })
       .catch(err => {
         let text = 'Error:\r\nThere is something wrong. Please try again.';
+        if (err.response.data.message === "Auth failed") {commit('checkConnection', false); text = 'Authentication failed. Please log in again.';};
         commit('changeNotification', text);
         commit('showNotification', true);
-        commit('checkConnection', false);
       });
     },
     submitUserChanges({ commit }, {user, id}) {
@@ -96,9 +98,10 @@ export const store = new Vuex.Store({
       })
       .catch(err => {
         let text = 'Error:\r\nThere is something wrong. Please try again.';
+        if (err.response.data.message === "Auth failed") {commit('checkConnection', false); text = 'Authentication failed. Please log in again.';};
         commit('changeNotification', text);
         commit('showNotification', true);
-        commit('checkConnection', false);
+        return Promise.reject(err.response.data.message);
       });
     },
     retAllUsers({ commit }) {
@@ -108,9 +111,10 @@ export const store = new Vuex.Store({
       })
       .catch(err => {
         let text = 'Error:\r\nThere is something wrong. You can\'t obtain users. Please try again later.';
+        if (err.response.data.message === "Auth failed") {commit('checkConnection', false); text = 'Authentication failed. Please log in again.';};
         commit('changeNotification', text);
         commit('showNotification', true);
-        commit('checkConnection', false);
+        return Promise.reject(err.response.data.message);
       });
     },
     deleteUser({commit}, id) {
@@ -120,9 +124,10 @@ export const store = new Vuex.Store({
       })
       .catch(err => {
         let text = 'Error:\r\nThere is something wrong. You can\'t delete user. Please try again later.';
+        if (err.response.data.message === "Auth failed") {commit('checkConnection', false); text = 'Authentication failed. Please log in again.';};
         commit('changeNotification', text);
         commit('showNotification', true);
-        commit('checkConnection', false);
+        return Promise.reject(err.response.data.message);
       });
     },
     retDevice({ commit }, id) {
@@ -132,9 +137,23 @@ export const store = new Vuex.Store({
       })
       .catch(err => {
         let text = 'Error:\r\nThere is something wrong. You can\'t obtain product. Please try again later.';
+        if (err.response.data.message === "Auth failed") {commit('checkConnection', false); text = 'Authentication failed. Please log in again.';};
         commit('changeNotification', text);
         commit('showNotification', true);
-        commit('checkConnection', false);
+        return Promise.reject(err.response.data.message);
+      })
+    },
+    srcDevice({ commit }, {search}) {
+      return api.findDevice(search, store.getters.getAuthCode)
+      .then(response => {
+        return Promise.resolve(response)
+      })
+      .catch(err => {
+        let text = 'Error:\r\nThere is something wrong. You can\'t find product. Please try again later.';
+        if (err.response.data.message === "Auth failed") {commit('checkConnection', false); text = 'Authentication failed. Please log in again.';};
+        commit('changeNotification', text);
+        commit('showNotification', true);
+        return Promise.reject(err.response.data.message);
       })
     },
     retAllDevices({ commit }) {
@@ -144,9 +163,10 @@ export const store = new Vuex.Store({
       })
       .catch(err => {
         let text = 'Error:\r\nThere is something wrong. You can\'t obtain products. Please try again later.';
+        if (err.response.data.message === "Auth failed") {commit('checkConnection', false); text = 'Authentication failed. Please log in again.';};
         commit('changeNotification', text);
         commit('showNotification', true);
-        commit('checkConnection', false);
+        return Promise.reject(err.response.data.message);
       });
     },
     insertDevice({ commit }, device) {
@@ -157,10 +177,11 @@ export const store = new Vuex.Store({
         Promise.resolve();
       })
       .catch(err => {
-        let text = 'Error: Your device can\'t be created. Try again later.';        
+        let text = 'Error: Your device can\'t be created. Try again later.';     
+        if (err.response.data.message === "Auth failed") {commit('checkConnection', false); text = 'Authentication failed. Please log in again.';};   
         commit('changeNotification', text);
         commit('showNotification', true);
-        commit('checkConnection', false);
+        return Promise.reject(err.response.data.message);
       });
     },
     removeDevice({ commit }, id) {
@@ -170,9 +191,10 @@ export const store = new Vuex.Store({
       })
       .catch(err => {
         let text = 'Error:\r\nThere is something wrong. You can\'t delete product. Please try again later.';
+        if (err.response.data.message === "Auth failed") {commit('checkConnection', false); text = 'Authentication failed. Please log in again.';};
         commit('changeNotification', text);
         commit('showNotification', true);
-        commit('checkConnection', false);
+        return Promise.reject(err.response.data.message);
       });
     },
     newOrder({ commit }, order) {
@@ -183,10 +205,11 @@ export const store = new Vuex.Store({
         Promise.resolve();
       })
       .catch(err => {
-        let text = 'Error: Your device can\'t be created. Try again later.';        
+        let text = 'Error: Your device can\'t be created. Try again later.';     
+        if (err.response.data.message === "Auth failed") {commit('checkConnection', false); text = 'Authentication failed. Please log in again.';};   
         commit('changeNotification', text);
         commit('showNotification', true);
-        commit('checkConnection', false);
+        return Promise.reject(err.response.data.message);
       });
     },
     retAllOrders({ commit }) {
@@ -196,9 +219,10 @@ export const store = new Vuex.Store({
       })
       .catch(err => {
         let text = 'Error:\r\nThere is something wrong. You can\'t obtain orders. Please try again later.';
+        if (err.response.data.message === "Auth failed") {commit('checkConnection', false); text = 'Authentication failed. Please log in again.';};
         commit('changeNotification', text);
         commit('showNotification', true);
-        commit('checkConnection', false);
+        return Promise.reject(err.response.data.message);
       });
     },
     deleteOrder({ commit }, id) {
@@ -208,9 +232,10 @@ export const store = new Vuex.Store({
       })
       .catch(err => {
         let text = 'Error:\r\nThere is something wrong. You can\'t delete order. Please try again later.';
+        if (err.response.data.message === "Auth failed") {commit('checkConnection', false); text = 'Authentication failed. Please log in again.';};
         commit('changeNotification', text);
         commit('showNotification', true);
-        commit('checkConnection', false);
+        return Promise.reject(err.response.data.message);
       });
     },
     logOutUser({ commit }) {
@@ -221,6 +246,20 @@ export const store = new Vuex.Store({
       commit('changeAuthentication', '');
       commit('changeType', 'user');
       commit('showUserCard', false);
+      localStorage.setItem('storedUser', null)
+      return Promise.resolve();
+    },
+    onStart({ commit }) {
+      let tempData = JSON.parse(localStorage.getItem('storedUser'))
+      if (tempData !== null) {
+        console.log(tempData)
+        commit('changeName', { name: tempData.name.name });
+        commit('changeAuthentication', { auth: tempData.auth.auth });
+        commit('changeType', { type: tempData.userType.userType });
+        commit('changeProfileId', tempData.profileId.profileId);
+        (tempData.userType.userType === 'admin') ? commit('showUserCard', true) : commit('showUserCard', false);
+        commit('checkConnection', true);
+      }
       return Promise.resolve();
     }
   },

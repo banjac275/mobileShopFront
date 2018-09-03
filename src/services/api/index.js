@@ -24,6 +24,9 @@ export default {
   obtainDevice (id, header) {
     return axios({method: 'get', url: config.products_url + '/' + id, headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + header}})
   },
+  findDevice (data, header) {
+    return axios({method: 'post', url: config.products_url + '/find', data: data, headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + header}})
+  },
   allDevices (header) {
     return axios({method: 'get', url: config.products_url, headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + header}})
   },

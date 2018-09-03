@@ -108,6 +108,9 @@ export default {
         this.recvData = data.data;
         this.enableEditing = false;
       })
+      .catch(err => {
+        if(err === "Auth failed") this.$router.push('login')
+      })
     }
   },
   mounted() {
@@ -118,6 +121,9 @@ export default {
         console.log(res);
         this.recvData = res.data;
         this.userEdit = res.data;
+      })
+      .catch(err => {
+        if(err === "Auth failed") this.$router.push('login')
       })
     })
   }

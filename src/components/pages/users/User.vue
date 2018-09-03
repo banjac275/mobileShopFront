@@ -53,6 +53,9 @@ export default {
           this.changeUser = false;
           this.$emit('editChecked', !this.editCheck)
         })
+        .catch(err => {
+        if(err === "Auth failed") this.$router.push('login')
+      })
       }
     },
     deleteClicked(event) {
@@ -63,6 +66,9 @@ export default {
           this.$emit('editChecked', !this.editCheck)
           this.$emit('elementDeleted', this.userBackup)
         })
+        .catch(err => {
+        if(err === "Auth failed") this.$router.push('login')
+      })
       }
     }
   },

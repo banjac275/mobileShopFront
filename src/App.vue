@@ -31,7 +31,6 @@ body {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  margin-top: 5px;
-  height: calc(100vh - 6px);
+  height: 100vh;
 }
 </style>

@@ -63,6 +63,9 @@ export default {
         });
         if(this.$store.getters.getUserType === "admin") this.enableEditing = true;
       })
+      .catch(err => {
+        if(err === "Auth failed") this.$router.push('login')
+      })
     }
   },
   computed: {

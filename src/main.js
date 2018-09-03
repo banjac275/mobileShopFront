@@ -8,7 +8,7 @@ import router from './router'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faMobileAlt, faTabletAlt, faSearch, faUsersCog,
   faCheck, faEye, faEyeSlash, faUserPlus, faCircle, faPen,
-  faShoppingCart, faUsers } from '@fortawesome/free-solid-svg-icons'
+  faShoppingCart, faUsers, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import { store } from './store/store'
@@ -27,6 +27,7 @@ library.add(faEyeSlash)
 library.add(faCircle)
 library.add(faUserPlus)
 library.add(faPen)
+library.add(faBars)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 

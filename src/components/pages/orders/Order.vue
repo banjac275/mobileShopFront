@@ -31,6 +31,9 @@ export default {
       .then(() => {
         this.$emit('orderCanceled', true);
       })
+      .catch(err => {
+        if(err === "Auth failed") this.$router.push('login')
+      })
     }
   }  
 }

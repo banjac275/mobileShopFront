@@ -55,6 +55,9 @@ export default {
         this.recvData = data.data.products;
         if(this.$store.getters.getUserType === "admin") this.enableEditing = true;
       })
+      .catch(err => {
+        if(err === "Auth failed") this.$router.push('login')
+      })
     })
   }
 }
