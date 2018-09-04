@@ -63,7 +63,7 @@ export const store = new Vuex.Store({
         let text = null;
         if ( userSignIn !== undefined) {
           if(userSignIn.email === '' || userSignIn.password === '' || userSignIn.firstName === '' || userSignIn.lastName === '' || userSignIn.passwordCompare === '' || userSignIn.passwordCompare !== userSignIn.password) {
-            text = 'Error:\r\nThere is some data missing or passwords dont match. Please fill all inputs correctly.';
+            text = 'Error:\r\nThere is some data missing or passwords don\'t match. Please fill all inputs correctly.';
           }
         } else {
           text = 'Error: Your account wasn\'t made due to an error. Please try again.';

@@ -55,7 +55,6 @@ export default {
 <style lang="scss" scoped>
 .search {
   height: calc(100vh - 50px);
-  width: 100%;
   flex-flow: column;
   margin: 10px;
   & input {
@@ -85,7 +84,13 @@ export default {
 }
 
 hr {
-  width: 60%;
+  width: 80%;
   margin: 10px;
+}
+
+@media screen and (min-width: 320px) {
+  .wrap {
+    max-width: 100%;
+  }
 }
 </style>

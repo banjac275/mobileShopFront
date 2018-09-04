@@ -69,7 +69,11 @@ export default {
 }
 
 .container {
-  width: 60%;
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-flow: column;
 }
 
 .top--container {
@@ -78,6 +82,13 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+}
+
+.middle--container {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-flow: column;    
 }
 
 h2 {
@@ -90,6 +101,19 @@ h2 {
   padding: 10px;
   &:hover {
     box-shadow: 0px 0px 5px 5px #b8b8b8;
+  }
+}
+
+@media screen and (min-width: 320px) {
+  .container {
+    min-width: 100%;
+    margin: 0;
+    hr {
+      width: 80%;
+    }
+  }
+  .top--container {
+    width: 80%;   
   }
 }
 </style>

@@ -63,11 +63,12 @@ export default {
 
 .orders {
   flex-flow: column;
+  width: 600px;
+  margin-top: 10px;
 }
 
 .orders--child {
   flex-flow: row;
-  width: 600px;
 }
 
 .submit {
@@ -83,5 +84,16 @@ hr {
   width: 100%;
   margin-top: 10px;
   margin-bottom: 5px;
+}
+
+@media screen and (min-width: 320px) and (max-width: 767px) {
+  .orders {
+    flex-flow: column;
+    width: 100%;
+  }
+
+  .orders--child {
+    flex-flow: column;
+  }
 }
 </style>

@@ -7,7 +7,7 @@
         <div><strong>Product Type:</strong> {{order.productId.type}}</div>
         <div><strong>Quantity:</strong> {{order.quantity}}</div>
       </div>
-      <div>
+      <div class="orders__product--medium">
         <div><strong>Buyer:</strong> {{order.userId.firstName}} {{order.userId.lastName}}</div>
         <div><strong>Email:</strong> {{order.userId.email}}</div>
       </div>
@@ -68,5 +68,16 @@ hr {
   width: 100%;
   margin-top: 10px;
   margin-bottom: 5px;
+}
+
+@media screen and (min-width: 320px) and (max-width: 767px) {
+  .orders {
+    flex-flow: column;
+    width: 100%;
+    min-height: 200px;
+    &__product--medium {
+      margin-left: -45px;
+    }
+  }
 }
 </style>

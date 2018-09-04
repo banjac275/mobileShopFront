@@ -122,7 +122,8 @@ export default {
     flex-flow: column;
     align-items: center;
     justify-content: center;
-    height: calc(100% - 50px);
+    height: calc(100% - 60px);
+    margin-top: 10px;
   }
 
   .login__container, .signin__container {
@@ -132,6 +133,7 @@ export default {
     justify-content: center;
     height: 430px;
     width: 100%;
+    
   }
 
   .login--btn, .signin--btn {
@@ -241,6 +243,27 @@ export default {
     }
     .input--password {
       width: 270px;
+    }
+
+    .notifications {
+      line-height: 18px;
+      text-align: center;
+      margin-top: 0;
+      height: 40px;
+      margin-bottom: 10px;
+    }
+
+    .notification__container {
+      margin-top: 5px;
+    }
+
+    .submit {
+      width: 200px;
+      font-size: 17px;
+    }
+
+    .login__container, .signin__container p {
+      font-size: 17px;
     }
   }
 </style>

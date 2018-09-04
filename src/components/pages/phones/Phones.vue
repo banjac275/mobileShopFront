@@ -106,7 +106,7 @@ export default {
 }
 
 hr {
-  width: 60%;
+  width: 80%;
 }
 
 h2 {
@@ -122,6 +122,7 @@ h4 {
   border: 1px solid #000;
   margin: 10px;
   padding: 10px;
+  width: 150px;
   &:hover {
     box-shadow: 0px 0px 5px 5px #b8b8b8;
   }
@@ -136,5 +137,20 @@ h4 {
 }
 .slide-leave-to {
   transform: translate(300%, 0);
+}
+
+@media screen and (min-width: 320px) {
+  .container__middle {
+    max-width: 100%;
+    &--child {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .container__top {
+    width: 80%;   
+  }
 }
 </style>

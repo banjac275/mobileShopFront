@@ -79,4 +79,19 @@ hr {
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
+@media screen and (min-width: 320px) {
+  .content__pic {
+    &__h1 {
+      font-size: 23px;
+    }
+    &__h4 {
+      font-size: 20px;
+    }
+    img {
+    width: 300px;
+  }
+  }
+  
+}
 </style>

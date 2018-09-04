@@ -6,7 +6,7 @@
       </div>
       <div class="header__right__parent">
         <div class="header--right--minimized" @click="showMenuHandler"><font-awesome-icon icon="bars"></font-awesome-icon></div>
-        <div class="right header--right">
+        <div class="right users">
           <router-link to="/search">Search <font-awesome-icon icon="search" /></router-link>
           <router-link to="/phones">Phones <font-awesome-icon icon="mobile-alt" /></router-link>
           <router-link to="/tablets">Tablets <font-awesome-icon icon="tablet-alt" /></router-link>
@@ -128,7 +128,7 @@ export default {
   padding-top: 5px;
   padding-bottom: 5px;
   box-shadow: 0.1px 2px #b4b4b4;
-  background-color: #fff;
+  background-color: #e7e7e7;
   z-index: 2;
 }
 
@@ -140,6 +140,7 @@ export default {
   margin-right: 10px;
   a {
       color: #000;
+      background-color: #e7e7e7;
       text-decoration: none;
       min-width: 80px;
       height: 100%;
@@ -185,7 +186,6 @@ export default {
 }
 
 .profile--dropdown {
-  background-color: #fff;
   border-bottom: 1px solid #000;
   border-left: 1px solid #000;
   border-radius: 0 0 2px 2px;
@@ -201,6 +201,12 @@ export default {
     cursor: pointer;
     background-color: #b8b8b8;
     color: #fff; 
+  }
+  a {
+    background-color: #e7e7e7;
+  }
+  div {
+    background-color: #e7e7e7;
   }
 }
 
@@ -269,7 +275,7 @@ export default {
   }
 }
 
-@media screen and (min-width: 320px) {
+@media screen and (min-width: 320px) and (min-width: 767px) {
     .header--right {
       display: flex;
       flex-flow: column;
@@ -291,12 +297,21 @@ export default {
       align-items: center;
       justify-content: center;
       max-height: 50px;
+      margin-top: 3px;
+      width: 100%;
     }
 
     .profile--dropdown__btn {
       max-height: 50px;
       padding: 0;
-      width: 100%;
+      width: 98%;
+    }
+
+    .profile--dropdown {
+      border: none;
+      width: 98.5%;
+      margin-left: 5px;
+      margin-top: 80px;
     }
 
     .logo {  
@@ -306,5 +321,9 @@ export default {
         height: 40px;
       }
     }
+  }
+
+  @media screen and (min-width: 320px) and (min-width: 767px) {
+  
   }
 </style>

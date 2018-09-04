@@ -9,7 +9,6 @@
       <div class="profile__content__info">
         <button class="submit" @click="enableEditing = !enableEditing">Edit profile <font-awesome-icon icon="pen" /></button>
         <div class="profile__content__info--changes">
-          <button class="submit" @click="sendChanges" v-if="enableEditing">Submit changes <font-awesome-icon icon="check" /></button>
           <p>First Name:</p>
           <input class="input--mail" type="text" v-model="userEdit.firstName" v-if="enableEditing">
           <p v-else> <strong>{{ recvData.firstName }}</strong></p>
@@ -36,6 +35,7 @@
             <p v-if="checkedPassword">Repeat New Password:</p>
             <input class="input--mail" type="password" v-model="repeatedNewPassword" v-if="checkedPassword">
           </div>
+          <button class="submit" @click="sendChanges" v-if="enableEditing">Submit changes <font-awesome-icon icon="check" /></button>
         </div>
       </div>
     </div>
@@ -147,7 +147,7 @@ export default {
     text-align: center;
     display: flex;
     flex-flow: row;
-    justify-content: space-evenly;
+    justify-content: flex-start;
     align-items: flex-start;
     &__img--container {
       max-height: 300px;
@@ -165,14 +165,14 @@ export default {
       }
     }
     &__info {
-      min-width: 400px;
+      width: 400px;
     }
   }
   &__notification--text, &__notification {
-  margin-top: 30px;
-  height: 50px;
-  line-height: 50px;
-}
+    margin-top: 30px;
+    height: 50px;
+    line-height: 50px;
+  }
 }
 
 hr {
@@ -227,5 +227,35 @@ label[for=picture] {
 .notification-leave-active {
   transition: opacity .8s;
   opacity: 0;
+}
+
+@media screen and (min-width: 320px) {
+  .profile {
+    margin-top: 10px;
+    &__content {
+      width: 100%;
+      flex-flow: column;
+      &__img--container {
+        min-height: 150px;
+        max-height: 150px;
+        max-width: 150px;
+        height: 150px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        left: calc(50% - 75px);
+        position: sticky;
+      }
+      &__info {
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        position: sticky;
+      }
+    }
+  }
+
+  .input--mail {
+    width: 300px;
+  }
 }
 </style>

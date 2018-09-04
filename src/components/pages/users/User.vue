@@ -13,9 +13,11 @@
         <div><strong>Orders:</strong> {{ user.orders | orderCount }}</div>
       </div>
       <div class="middle--container__buttons">
-        <button class="submit" v-if="changeUser" @click="confirmClick($event)">Confirm</button>
-        <button class="submit type--btn" v-if="editCheck" @click="typeClicked($event)"><span v-if="changeUser">Cancel change</span><span v-else>Change type</span></button>
         <button class="submit" v-if="editCheck" @click="deleteClicked($event)">Delete user</button>
+        <div class="buttons--container">
+          <button class="submit" v-if="changeUser" @click="confirmClick($event)">Confirm</button>
+          <button class="submit type--btn" v-if="editCheck" @click="typeClicked($event)"><span v-if="changeUser">Cancel change</span><span v-else>Change type</span></button>
+        </div>
       </div> 
     </div>
     <hr>  
@@ -96,20 +98,25 @@ export default {
 
 .middle--container__info {
   margin-left: 30px;
+  margin-bottom: 10px;
   display: flex;
   flex-flow: column;
   justify-content: space-between;
   height: 110px;
   width: 400px;
+  line-height: 18px;
 }
 
 .middle--container__buttons {
   display: flex;
-  flex-flow: row;
+  flex-flow: column;
   justify-content: space-between;
   align-items: center;
   width: 400px;
-  height: 120px;
+}
+
+.buttons--container {
+  flex-flow: row;
 }
 
 input {
@@ -146,8 +153,74 @@ input {
   border: 1px solid #000;
   margin: 10px;
   padding: 10px;
+  min-height: 40px;
+  width: 150px;
   &:hover {
     box-shadow: 0px 0px 5px 5px #b8b8b8;
+  }
+}
+
+@media screen and (min-width: 320px) and (max-width: 767px) {
+  .users--elements {
+    min-width: 310px;
+    flex-flow: column;
+    hr {
+      width: 80%;
+    }
+  }
+  .middle--container__info {
+    width: 100%;
+    & input {
+      width: 100px;
+    }
+  }
+
+  .buttons--container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column-reverse;
+  }
+
+  .middle--container__buttons {
+    width: 100%;
+    flex-flow: column;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .users--elements {
+    min-width: 600px;
+  }
+
+   hr {
+    max-width: 600px;
+  }
+
+  .middle--container__info {
+    width: 30%;
+    & input {
+      width: 100px;
+    }
+  }
+
+  .buttons--container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    button {
+      height: 55px;
+    }
+  }
+
+  .middle--container__buttons {
+    width: 45%;
+    height: 110px;
+    flex-flow: column;
+  }
+
+  .submit {
+    width: 100px;
   }
 }
 </style>

@@ -104,7 +104,7 @@ export default {
 }
 
 .container__middle {
-  max-width: 70%;
+  max-width: 80%;
   & > div {
     flex-flow: column;
   }
@@ -116,5 +116,9 @@ hr {
 
 h2 {
   margin-left: 10px;
+}
+
+@media screen and (min-width: 320px) {
+
 }
 </style>

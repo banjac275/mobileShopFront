@@ -1,7 +1,7 @@
 <template>
     <div class="container flex">
       <div class="container__top flex">
-        <h2>Phones</h2> 
+        <h2>Tablets</h2> 
         <button class="submit" v-if="getUserCheck" @click="addPhone = !addPhone">Add Tablet <font-awesome-icon icon="pen" /></button>
       </div>
       <hr>
@@ -106,7 +106,7 @@ export default {
 }
 
 hr {
-  width: 60%;
+  width: 80%;
 }
 
 h2 {
@@ -136,5 +136,20 @@ h4 {
 }
 .slide-leave-to {
   transform: translate(300%, 0);
+}
+
+@media screen and (min-width: 320px) {
+  .container__middle {
+    max-width: 100%;
+    &--child {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .container__top {
+    width: 80%;   
+  }
 }
 </style>
