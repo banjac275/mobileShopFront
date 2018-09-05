@@ -80,7 +80,7 @@ export default {
       'getProfileId'
     ]),
     showImg() {
-      return (this.user.picture !== undefined ) ? "http://localhost:3000/"+this.user.picture : this.defImg;
+      return (this.user.picture !== undefined ) ? "https://mongo-mobile-shop.herokuapp.com/"+this.user.picture : this.defImg;
     }
   },
   filters: {

@@ -75,7 +75,7 @@ export default {
       'getNotificationShowCheck'
     ]),
     retPic() {
-      return (this.recvData.picture !== undefined) ? "http://localhost:3000/" + this.recvData.picture : "";
+      return (this.recvData.picture !== undefined) ? "https://mongo-mobile-shop.herokuapp.com/" + this.recvData.picture : "";
     }
   },
   methods: {
@@ -229,7 +229,7 @@ label[for=picture] {
   opacity: 0;
 }
 
-@media screen and (min-width: 320px) {
+@media screen and (min-width: 320px) and (max-width: 767px) {
   .profile {
     margin-top: 10px;
     &__content {

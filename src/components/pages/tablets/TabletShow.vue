@@ -33,7 +33,7 @@ export default {
       'getProfileId'
     ]),
     setPic() {
-      return (this.phone.picture !== undefined) ? "http://localhost:3000/" + this.phone.picture : this.defPic;
+      return (this.phone.picture !== undefined) ? "https://mongo-mobile-shop.herokuapp.com/" + this.phone.picture : this.defPic;
     }
   },
   methods: {
@@ -94,6 +94,7 @@ export default {
   border: 1px solid #000;
   margin: 10px;
   padding: 10px;
+  width: 200px;
   &:hover {
     box-shadow: 0px 0px 5px 5px #b8b8b8;
   }

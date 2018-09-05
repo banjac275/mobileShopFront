@@ -1,5 +1,5 @@
-const API_URL = 'http://localhost'
-const API_PORT = ':3000'
+const API_URL = 'https://mongo-mobile-shop.herokuapp.com'
+const API_PORT = ''
 
 export default {
   images_url: API_URL + API_PORT + '/',

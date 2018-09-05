@@ -99,6 +99,7 @@ h2 {
   border: 1px solid #000;
   margin: 10px;
   padding: 10px;
+  width: 150px;
   &:hover {
     box-shadow: 0px 0px 5px 5px #b8b8b8;
   }

@@ -33,7 +33,7 @@ export default {
       'getProfileId'
     ]),
     setPic() {
-      return (this.phone.picture !== undefined) ? "http://localhost:3000/" + this.phone.picture : this.defPic;
+      return (this.phone.picture !== undefined) ? "https://mongo-mobile-shop.herokuapp.com/" + this.phone.picture : this.defPic;
     }
   },
   methods: {

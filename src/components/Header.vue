@@ -275,7 +275,7 @@ export default {
   }
 }
 
-@media screen and (min-width: 320px) and (min-width: 767px) {
+@media screen and (min-width: 320px) and (max-width: 767px) {
     .header--right {
       display: flex;
       flex-flow: column;
@@ -323,7 +323,33 @@ export default {
     }
   }
 
-  @media screen and (min-width: 320px) and (min-width: 767px) {
-  
+  @media screen and (min-width: 768px) {
+    .right {
+      display: flex;
+      flex-flow: row;
+      justify-content: space-around;
+      /* width: 40%; */
+      margin-right: 10px;
+      a {
+          color: #000;
+          background-color: #e7e7e7;
+          text-decoration: none;
+          min-width: 80px;
+          height: 100%;
+          margin-bottom: 5px;
+          padding-left: 5px;
+          padding-right: 5px;
+          text-align: center;
+          &:hover {
+            cursor: pointer;
+            background-color: #b8b8b8;
+            color: #fff; 
+          }
+      }
+    }
+
+    .header--right--minimized {
+      display: none;
+    }
   }
 </style>
